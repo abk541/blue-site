@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowDown, Gauge, Waves } from 'lucide-react';
+import { ArrowDown, Building2, Gauge, ShieldCheck, TrendingDown } from 'lucide-react';
 
 const heroItems = {
   hidden: {},
@@ -17,13 +17,8 @@ const fadeUp = {
 
 export default function HeroSection() {
   return (
-    <section className="hero-light relative overflow-hidden border-b border-border px-4 py-12 md:px-6 md:py-16">
+    <section className="hero-light relative overflow-hidden border-b border-border px-4 py-10 md:px-6 md:py-14">
       <div className="hero-grid" aria-hidden="true" />
-      <div className="hero-ripple" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
 
       <motion.div
         className="relative z-10 mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:items-center"
@@ -35,58 +30,72 @@ export default function HeroSection() {
           <motion.p variants={fadeUp} className="mb-4 font-mono text-xs uppercase tracking-widest text-cyan">
             Bouygues Construction · Pilotage eau chantier
           </motion.p>
-          <motion.h1 variants={fadeUp} className="font-display text-5xl font-bold leading-none text-primary md:text-7xl">
+          <motion.h1 variants={fadeUp} className="font-display text-5xl font-bold leading-none text-primary md:text-6xl">
             Blue Site
           </motion.h1>
           <motion.p variants={fadeUp} className="mt-5 max-w-2xl font-sans text-lg leading-8 text-secondary">
-            Un cockpit clair pour estimer l'eau chantier, repérer les gros postes et transformer les optimisations en économies visibles.
+            Une plateforme de pilotage premium pour mesurer, comparer et réduire la consommation d'eau des chantiers avec une lecture exécutive et terrain.
           </motion.p>
           <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-3">
-            <span className="hero-chip">Prérempli</span>
-            <span className="hero-chip">Calcul instantané</span>
-            <span className="hero-chip">Rapport exportable</span>
+            <span className="hero-chip">Modèle chantier</span>
+            <span className="hero-chip">Relevés IoT</span>
+            <span className="hero-chip">Rapport direction</span>
           </motion.div>
         </div>
 
         <motion.div
           variants={fadeUp}
-          className="hero-instrument"
-          whileHover={{ y: -4, rotateX: 2, rotateY: -2 }}
-          transition={{ type: 'spring', stiffness: 180, damping: 18 }}
+          className="hero-instrument executive-panel"
+          whileHover={{ y: -2 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 20 }}
         >
-          <div className="instrument-scan" />
           <div className="flex items-center justify-between">
             <div>
-              <p className="eyebrow">Live Water Index</p>
+              <p className="eyebrow">Water Governance Index</p>
               <p className="mt-2 font-display text-2xl text-primary">Chantier sous contrôle</p>
             </div>
             <span className="metric-icon">
               <Gauge size={18} />
             </span>
           </div>
-          <div className="water-orbit" aria-hidden="true">
-            <Waves size={42} />
-            <span />
+
+          <div className="executive-meter" aria-hidden="true">
+            <div className="executive-meter-top">
+              <span>Indice de maîtrise</span>
+              <strong>87%</strong>
+            </div>
+            <div className="executive-track">
+              <span style={{ width: '87%' }} />
+            </div>
+            <div className="executive-scale">
+              <span>Mesure</span>
+              <span>Seuil</span>
+              <span>Optimisation</span>
+            </div>
           </div>
+
           <div className="instrument-stats">
             <span>
+              <Building2 size={15} />
               <strong>11</strong>
-              catégories
+              postes suivis
             </span>
             <span>
+              <ShieldCheck size={15} />
               <strong>5</strong>
-              optimisations
+              leviers validés
             </span>
             <span>
-              <strong>PDF</strong>
-              rapport
+              <TrendingDown size={15} />
+              <strong>IoT</strong>
+              seuils contrôlés
             </span>
           </div>
         </motion.div>
       </motion.div>
 
       <div className="relative z-10 mx-auto mt-10 flex max-w-7xl justify-center lg:justify-start">
-        <ArrowDown className="animate-float text-blue" size={22} />
+        <ArrowDown className="text-blue" size={20} />
       </div>
     </section>
   );

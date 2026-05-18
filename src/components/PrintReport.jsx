@@ -9,10 +9,10 @@ const STATUS_LABELS = {
 };
 
 const REPORT_COLORS = {
-  actual: '#00a888',
-  threshold: '#e75113',
-  model: '#32b8f2',
-  reuse: '#f6c96f',
+  actual: '#4f8cc9',
+  threshold: '#b66a42',
+  model: '#5bb7c8',
+  reuse: '#d7c49a',
   grid: '#d6dedb',
   text: '#111827',
 };

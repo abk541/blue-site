@@ -69,7 +69,7 @@ function LiveKpi({ icon: Icon, label, value, unit, tone = 'cyan', onClick }) {
       type="button"
       className={`live-kpi live-kpi-${tone}`}
       onClick={onClick}
-      whileHover={{ y: -2, borderColor: 'rgba(53,220,192,0.38)' }}
+      whileHover={{ y: -2, borderColor: 'rgba(79,140,201,0.38)' }}
     >
       <span className="metric-icon">
         <Icon size={18} />

@@ -18,7 +18,7 @@ export default {
         muted: 'var(--text-muted)',
       },
       fontFamily: {
-        display: ['Syne', 'ui-sans-serif', 'system-ui'],
+        display: ['DM Sans', 'ui-sans-serif', 'system-ui'],
         sans: ['DM Sans', 'ui-sans-serif', 'system-ui'],
         mono: ['DM Mono', 'ui-monospace', 'SFMono-Regular'],
       },
