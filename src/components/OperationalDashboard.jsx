@@ -86,44 +86,60 @@ function LiveKpi({ icon: Icon, label, value, unit, tone = 'cyan', onClick }) {
 function DashboardFilters({ filters, onChange }) {
   return (
     <div className="dashboard-controls">
-      <div className="flex items-center gap-2 text-secondary">
+      <div className="filter-section-title">
         <Filter size={16} />
         <span className="font-mono text-xs uppercase tracking-widest">Filtres live</span>
       </div>
-      <div className="segmented-control">
-        {DASHBOARD_PERIODS.map((period) => (
-          <button
-            type="button"
-            key={period.id}
-            className={filters.period === period.id ? 'segmented-active' : ''}
-            onClick={() => onChange('period', period.id)}
-          >
-            {period.label}
-          </button>
-        ))}
+
+      <div className="filter-field filter-period-field">
+        <span>Période</span>
+        <div className="segmented-control">
+          {DASHBOARD_PERIODS.map((period) => (
+            <button
+              type="button"
+              key={period.id}
+              className={filters.period === period.id ? 'segmented-active' : ''}
+              onClick={() => onChange('period', period.id)}
+            >
+              {period.label}
+            </button>
+          ))}
+        </div>
       </div>
-      <select value={filters.zone} onChange={(event) => onChange('zone', event.target.value)}>
-        <option value="all">Toutes zones</option>
-        {IOT_ZONES.map((zone) => (
-          <option key={zone.id} value={zone.id}>
-            {zone.label}
-          </option>
-        ))}
-      </select>
-      <select value={filters.usage} onChange={(event) => onChange('usage', event.target.value)}>
-        <option value="all">Tous usages</option>
-        {USAGE_TYPES.map((usage) => (
-          <option key={usage.id} value={usage.id}>
-            {usage.label}
-          </option>
-        ))}
-      </select>
-      <select value={filters.status} onChange={(event) => onChange('status', event.target.value)}>
-        <option value="all">Tous appareils</option>
-        <option value="online">En ligne</option>
-        <option value="warning">A surveiller</option>
-        <option value="offline">Hors ligne</option>
-      </select>
+
+      <label className="filter-field">
+        <span>Zone</span>
+        <select value={filters.zone} onChange={(event) => onChange('zone', event.target.value)}>
+          <option value="all">Toutes zones</option>
+          {IOT_ZONES.map((zone) => (
+            <option key={zone.id} value={zone.id}>
+              {zone.label}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="filter-field">
+        <span>Usage</span>
+        <select value={filters.usage} onChange={(event) => onChange('usage', event.target.value)}>
+          <option value="all">Tous usages</option>
+          {USAGE_TYPES.map((usage) => (
+            <option key={usage.id} value={usage.id}>
+              {usage.label}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="filter-field">
+        <span>Appareils</span>
+        <select value={filters.status} onChange={(event) => onChange('status', event.target.value)}>
+          <option value="all">Tous appareils</option>
+          <option value="online">En ligne</option>
+          <option value="warning">A surveiller</option>
+          <option value="offline">Hors ligne</option>
+        </select>
+      </label>
     </div>
   );
 }
