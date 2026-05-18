@@ -1,0 +1,216 @@
+export const DEFAULT_FORM = {
+  project_name: 'HUIM6',
+  semaines_totales: 104,
+  jours_ouvres_semaine: 6,
+  effectif: 3500,
+  volume_beton: 90000,
+  volume_mortier: 8000,
+  surface_chapes: 100000,
+  surface_beton_cure: 180000,
+  jours_cure: 2,
+  nb_camions_toupie: 11250,
+  jours_pompage: 365,
+  surface_enduits: 100000,
+  surface_humidifier: 100000,
+  longueur_sciage: 1000,
+  nb_carottages: 1500,
+  surface_brumisation: 0,
+  jours_brumisation: 0,
+  surface_compacter: 80000,
+  longueur_voies: 1000,
+  jours_arrosage_voies: 90,
+  nb_passages_lavage_roues: 2,
+  volume_reseau_plomberie: 2009.6,
+  volume_reseau_chauffage: 2009.6,
+  volume_reseau_sprinkler: 251.2,
+  volume_bassin: 0,
+  nb_lavages_engins: 1000,
+  nb_lavages_bennes: 730,
+  jours_centrale_beton: 365,
+  volume_bentonite: 0,
+  nb_essais_beton: 1800,
+  nb_nettoyages_labo: 1800,
+  surface_plants: 80000,
+  semaines_arrosage_paysager: 12,
+  chasses_par_pers: 2,
+  douches_par_pers_semaine: 0,
+  lavabos_par_pers: 5,
+  repas_par_jour: 1,
+  surface_base_vie: 2000,
+  freq_nettoyage: 1,
+};
+
+export const STEPS = [
+  { id: 'project', label: 'Projet', title: 'Informations Projet' },
+  { id: 'work', label: 'Travaux', title: 'Activités Chantier' },
+  { id: 'welfare', label: 'Bases-vie', title: 'Bases-vie' },
+  { id: 'optimizations', label: 'Optimisations', title: 'Optimisations' },
+];
+
+export const PROJECT_FIELDS = [
+  {
+    name: 'project_name',
+    label: 'Nom du projet',
+    unit: 'Projet',
+    description: 'Référence chantier affichée dans le rapport',
+    type: 'text',
+  },
+  {
+    name: 'semaines_totales',
+    label: 'Durée totale',
+    unit: 'semaines',
+    description: 'Planning global du chantier',
+  },
+  {
+    name: 'jours_ouvres_semaine',
+    label: 'Jours ouvrés/semaine',
+    unit: 'j/sem',
+    description: 'Rythme moyen d’activité',
+  },
+  {
+    name: 'effectif',
+    label: 'Effectif moyen',
+    unit: 'personnes',
+    description: 'Présence moyenne sur site',
+  },
+];
+
+export const ACTIVITY_CATEGORIES = [
+  {
+    id: 'concrete',
+    title: 'Béton & Mortiers',
+    resultCategories: ['Béton & mortiers'],
+    summary: 'Volumes, cure et lavages liés au béton',
+    icon: 'HardHat',
+    fields: [
+      { name: 'volume_beton', label: 'Volume de béton', unit: 'm3' },
+      { name: 'volume_mortier', label: 'Volume de mortier', unit: 'm3' },
+      { name: 'surface_chapes', label: 'Surface chapes/ragréages', unit: 'm2' },
+      { name: 'surface_beton_cure', label: 'Surface béton à curer', unit: 'm2' },
+      { name: 'jours_cure', label: 'Jours de cure par surface', unit: 'jours' },
+      { name: 'nb_camions_toupie', label: 'Nb camions toupie à laver', unit: 'camions' },
+      { name: 'jours_pompage', label: 'Jours pompe à béton', unit: 'jours' },
+    ],
+  },
+  {
+    id: 'masonry',
+    title: 'Maçonnerie & Enduits',
+    resultCategories: ['Maçonnerie & enduits'],
+    summary: 'Enduits, mortiers et humidification des supports',
+    icon: 'BrickWall',
+    fields: [
+      { name: 'surface_enduits', label: 'Surface enduits', unit: 'm2' },
+      { name: 'surface_humidifier', label: 'Surface à humidifier', unit: 'm2' },
+    ],
+  },
+  {
+    id: 'cutting',
+    title: 'Sciage & Forage',
+    resultCategories: ['Sciage & forage'],
+    summary: 'Sciage béton et carottages',
+    icon: 'Cog',
+    fields: [
+      { name: 'longueur_sciage', label: 'Longueur de sciage', unit: 'ml' },
+      { name: 'nb_carottages', label: 'Nb carottages', unit: 'nb' },
+    ],
+  },
+  {
+    id: 'earthworks',
+    title: 'Terrassement & VRD',
+    resultCategories: ['Terrassement & VRD', 'Poussières & propreté'],
+    summary: 'Compactage, voiries et poussières',
+    icon: 'Construction',
+    fields: [
+      { name: 'surface_brumisation', label: 'Surface brumisation', unit: 'm2' },
+      { name: 'jours_brumisation', label: 'Jours brumisation', unit: 'jours' },
+      { name: 'surface_compacter', label: 'Surface à compacter', unit: 'm2' },
+      { name: 'longueur_voies', label: 'Longueur voies internes', unit: 'ml' },
+      { name: 'jours_arrosage_voies', label: 'Jours arrosage voies', unit: 'jours' },
+      { name: 'nb_passages_lavage_roues', label: 'Nb passages lave-roues', unit: 'nb' },
+    ],
+  },
+  {
+    id: 'systems',
+    title: 'Réseaux Techniques',
+    resultCategories: ['Techniques'],
+    summary: 'Mises en eau plomberie, CVC et sprinklers',
+    icon: 'Wrench',
+    fields: [
+      { name: 'volume_reseau_plomberie', label: 'Volume réseau plomberie', unit: 'm3' },
+      { name: 'volume_reseau_chauffage', label: 'Volume circuits chauffage/clim', unit: 'm3' },
+      { name: 'volume_reseau_sprinkler', label: 'Volume réseau sprinklers', unit: 'm3' },
+      { name: 'volume_bassin', label: 'Volume bassins/piscines', unit: 'm3' },
+    ],
+  },
+  {
+    id: 'specials',
+    title: 'Spéciaux & Divers',
+    resultCategories: [
+      'Poussières & propreté',
+      'Laboratoire & QA',
+      'Paysage',
+      'Spéciaux',
+      'Déchets & recyclage',
+    ],
+    summary: 'Engins, centrale, laboratoire, plantations et bennes',
+    icon: 'Factory',
+    fields: [
+      { name: 'nb_lavages_engins', label: 'Nb lavages engins', unit: 'nb' },
+      { name: 'nb_lavages_bennes', label: 'Nb lavages bennes', unit: 'nb' },
+      { name: 'jours_centrale_beton', label: 'Jours centrale à béton', unit: 'jours' },
+      { name: 'volume_bentonite', label: 'Volume boue bentonite', unit: 'm3' },
+      { name: 'nb_essais_beton', label: 'Nb essais béton', unit: 'nb' },
+      { name: 'nb_nettoyages_labo', label: 'Nb nettoyages labo', unit: 'nb' },
+      { name: 'surface_plants', label: 'Surface plantations', unit: 'm2' },
+      { name: 'semaines_arrosage_paysager', label: 'Semaines arrosage paysager', unit: 'semaines' },
+    ],
+  },
+];
+
+export const WELFARE_FIELDS = [
+  {
+    name: 'chasses_par_pers',
+    label: "Chasses d'eau par pers/jour",
+    unit: 'nb',
+    description: 'Usages sanitaires quotidiens',
+  },
+  {
+    name: 'douches_par_pers_semaine',
+    label: 'Douches par pers/semaine',
+    unit: 'nb',
+    description: 'Douches hebdomadaires',
+  },
+  {
+    name: 'lavabos_par_pers',
+    label: 'Lavages mains par pers/jour',
+    unit: 'nb',
+    description: 'Lavages mains quotidiens',
+  },
+  {
+    name: 'repas_par_jour',
+    label: 'Repas servis par jour',
+    unit: 'repas/j',
+    description: 'Consommation cuisine',
+  },
+  {
+    name: 'surface_base_vie',
+    label: 'Surface base-vie',
+    unit: 'm2',
+    description: 'Surface nettoyée',
+  },
+  {
+    name: 'freq_nettoyage',
+    label: 'Fréquence nettoyage/semaine',
+    unit: '/sem',
+    description: 'Interventions par semaine',
+  },
+];
+
+export const STEP_FIELD_NAMES = [
+  PROJECT_FIELDS.map((field) => field.name),
+  ACTIVITY_CATEGORIES.flatMap((category) => category.fields.map((field) => field.name)),
+  WELFARE_FIELDS.map((field) => field.name),
+  [],
+];
+
+export const ALL_FIELD_NAMES = STEP_FIELD_NAMES.flat();
