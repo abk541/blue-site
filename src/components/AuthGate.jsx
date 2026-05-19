@@ -1,17 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LockKeyhole, ShieldCheck } from 'lucide-react';
 import bouyguesLogo from '../assets/bouygues-construction-logo-clean.png';
 import {
   clearAuthSession,
   getAuthSession,
-  getAuthSessionTtlMs,
   verifyCredentials,
 } from '../lib/auth';
-
-function formatMinutes(ms) {
-  return Math.max(0, Math.ceil(ms / 60000));
-}
 
 export default function AuthGate({ children }) {
   const [session, setSession] = useState(() => getAuthSession());
@@ -20,7 +15,6 @@ export default function AuthGate({ children }) {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [expired, setExpired] = useState(false);
-  const ttlMinutes = useMemo(() => formatMinutes(getAuthSessionTtlMs()), []);
 
   useEffect(() => {
     if (!session) {
@@ -114,11 +108,11 @@ export default function AuthGate({ children }) {
 
           <p className="eyebrow">Authentification requise</p>
           <h1>Connexion Blue Site</h1>
-          <p className="auth-copy">
-            {expired
-              ? 'Votre session a expiré. Une nouvelle connexion est nécessaire pour continuer.'
-              : `Veuillez vous identifier. La session expire automatiquement après ${ttlMinutes} minutes.`}
-          </p>
+          {expired ? (
+            <p className="auth-copy">
+              Votre session a expiré. Une nouvelle connexion est nécessaire pour continuer.
+            </p>
+          ) : null}
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <label>
