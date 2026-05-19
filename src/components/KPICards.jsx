@@ -51,7 +51,7 @@ function KPICards({ totals }) {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05, duration: 0.35 }}
-            whileHover={{ y: -2, borderColor: 'rgba(79,140,201,0.38)' }}
+            whileHover={{ y: -2, borderColor: 'rgba(255,98,0,0.32)' }}
           >
             <Icon size={18} className={item.accent} />
             <p className="mt-5 font-sans text-sm text-secondary">{item.label}</p>

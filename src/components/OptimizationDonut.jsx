@@ -28,7 +28,7 @@ function OptimizationDonut({ totals }) {
               animationDuration={900}
             >
               {data.map((entry) => (
-                <Cell key={entry.name} fill={entry.color} stroke="rgba(255,255,255,0.08)" />
+                <Cell key={entry.name} fill={entry.color} stroke="rgba(255,255,255,0.84)" />
               ))}
             </Pie>
             <Tooltip

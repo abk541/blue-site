@@ -69,7 +69,7 @@ function LiveKpi({ icon: Icon, label, value, unit, tone = 'cyan', onClick }) {
       type="button"
       className={`live-kpi live-kpi-${tone}`}
       onClick={onClick}
-      whileHover={{ y: -2, borderColor: 'rgba(79,140,201,0.38)' }}
+      whileHover={{ y: -2, borderColor: 'rgba(255,98,0,0.34)' }}
     >
       <span className="metric-icon">
         <Icon size={18} />
@@ -170,9 +170,9 @@ function ThresholdControlChart({ data, onSelect }) {
                 <stop offset="100%" stopColor="var(--accent-cyan)" stopOpacity="0.03" />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fill: 'rgba(239,248,245,0.48)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: 'rgba(239,248,245,0.48)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <CartesianGrid stroke="rgba(22,43,61,0.08)" vertical={false} />
+            <XAxis dataKey="label" tick={{ fill: 'rgba(20,32,51,0.52)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: 'rgba(20,32,51,0.52)', fontSize: 11 }} axisLine={false} tickLine={false} />
             <Tooltip content={chartTooltip} />
             <Bar dataKey="reuse" name="Réutilisée" fill="var(--accent-sand)" radius={[5, 5, 0, 0]} barSize={14} />
             <Area type="monotone" dataKey="actual" name="Réel IoT" stroke="var(--accent-cyan)" fill="url(#actualArea)" strokeWidth={3} />
@@ -203,7 +203,7 @@ function UsagePie({ data, onSelect }) {
               onClick={(entry) => onSelect({ type: 'usage', id: entry.id })}
             >
               {data.map((entry) => (
-                <Cell key={entry.id} fill={entry.color} stroke="rgba(255,255,255,0.08)" />
+                <Cell key={entry.id} fill={entry.color} stroke="rgba(255,255,255,0.82)" />
               ))}
             </Pie>
             <Tooltip content={chartTooltip} />
@@ -232,7 +232,7 @@ function DeviceHealth({ data, onStatusFilter }) {
       <div className="relative h-56">
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart innerRadius="38%" outerRadius="92%" data={data} startAngle={90} endAngle={-270}>
-            <RadialBar dataKey="value" cornerRadius={8} background={{ fill: 'rgba(255,255,255,0.04)' }}>
+            <RadialBar dataKey="value" cornerRadius={8} background={{ fill: 'rgba(22,43,61,0.06)' }}>
               {data.map((entry) => (
                 <Cell key={entry.name} fill={entry.color} />
               ))}
@@ -277,9 +277,9 @@ function ZoneComparison({ data, onSelect }) {
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 12, right: 10 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.06)" horizontal={false} />
-            <XAxis type="number" tick={{ fill: 'rgba(239,248,245,0.48)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis dataKey="label" type="category" width={130} tick={{ fill: 'rgba(239,248,245,0.58)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <CartesianGrid stroke="rgba(22,43,61,0.08)" horizontal={false} />
+            <XAxis type="number" tick={{ fill: 'rgba(20,32,51,0.52)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis dataKey="label" type="category" width={130} tick={{ fill: 'rgba(20,32,51,0.62)', fontSize: 11 }} axisLine={false} tickLine={false} />
             <Tooltip content={chartTooltip} />
             <Bar dataKey="threshold" name="Seuil" fill="rgba(246,201,111,0.36)" radius={[0, 5, 5, 0]} />
             <Bar dataKey="actual" name="Réel" fill="var(--accent-cyan)" radius={[0, 5, 5, 0]} onClick={(entry) => onSelect({ type: 'zone', id: entry.id })} />
@@ -339,8 +339,8 @@ function PerformanceRadar({ zones }) {
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
-            <PolarGrid stroke="rgba(255,255,255,0.08)" />
-            <PolarAngleAxis dataKey="zone" tick={{ fill: 'rgba(239,248,245,0.58)', fontSize: 11 }} />
+            <PolarGrid stroke="rgba(22,43,61,0.1)" />
+            <PolarAngleAxis dataKey="zone" tick={{ fill: 'rgba(20,32,51,0.62)', fontSize: 11 }} />
             <Radar name="Maîtrise seuil" dataKey="score" stroke="var(--accent-cyan)" fill="var(--accent-cyan)" fillOpacity={0.22} />
             <Radar name="Potentiel" dataKey="savings" stroke="var(--accent-gold)" fill="var(--accent-gold)" fillOpacity={0.12} />
             <Tooltip />

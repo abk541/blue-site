@@ -40,12 +40,12 @@ function CategoryBarChart({ data }) {
               </linearGradient>
             </defs>
             {!isMobile ? (
-              <CartesianGrid stroke="rgba(255,255,255,0.06)" horizontal={false} />
+              <CartesianGrid stroke="rgba(22,43,61,0.08)" horizontal={false} />
             ) : null}
             {!isMobile ? (
               <XAxis
                 type="number"
-                tick={{ fill: 'rgba(255,255,255,0.45)', fontSize: 11 }}
+                tick={{ fill: 'rgba(20,32,51,0.52)', fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -55,13 +55,13 @@ function CategoryBarChart({ data }) {
                 dataKey="label"
                 type="category"
                 width={142}
-                tick={{ fill: 'rgba(255,255,255,0.62)', fontSize: 11 }}
+                tick={{ fill: 'rgba(20,32,51,0.64)', fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
             ) : null}
             <Tooltip
-              cursor={{ fill: 'rgba(0,163,255,0.08)' }}
+              cursor={{ fill: 'rgba(0,114,206,0.07)' }}
               content={({ active, payload }) => {
                 if (!active || !payload?.length) {
                   return null;

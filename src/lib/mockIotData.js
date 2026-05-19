@@ -12,13 +12,13 @@ export const DASHBOARD_FILTER_DEFAULTS = {
 };
 
 export const USAGE_TYPES = [
-  { id: 'beton', label: 'Béton', color: '#5bb7c8' },
-  { id: 'bases-vie', label: 'Bases-vie', color: '#4f8cc9' },
-  { id: 'vrd', label: 'VRD', color: '#d7c49a' },
-  { id: 'lavage', label: 'Lavage', color: '#b66a42' },
-  { id: 'technique', label: 'Réseaux', color: '#7bb18d' },
-  { id: 'paysage', label: 'Paysage', color: '#6f9f8f' },
-  { id: 'qa', label: 'Laboratoire', color: '#8796b8' },
+  { id: 'beton', label: 'Béton', color: '#0072ce' },
+  { id: 'bases-vie', label: 'Bases-vie', color: '#00a9e0' },
+  { id: 'vrd', label: 'VRD', color: '#ff6200' },
+  { id: 'lavage', label: 'Lavage', color: '#f59e0b' },
+  { id: 'technique', label: 'Réseaux', color: '#007a63' },
+  { id: 'paysage', label: 'Paysage', color: '#2cb1a6' },
+  { id: 'qa', label: 'Laboratoire', color: '#64748b' },
 ];
 
 export const IOT_ZONES = [
@@ -482,13 +482,13 @@ export function buildDashboardData(results, filters) {
     {
       name: 'En ligne',
       value: filteredSensors.filter((sensor) => sensor.status === 'online').length,
-      color: '#5bbf95',
+      color: '#007a63',
       unit: 'capteurs',
     },
     {
       name: 'A surveiller',
       value: filteredSensors.filter((sensor) => sensor.status === 'warning').length,
-      color: '#d7c49a',
+      color: '#ff6200',
       unit: 'capteurs',
     },
     {

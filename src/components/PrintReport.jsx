@@ -9,12 +9,12 @@ const STATUS_LABELS = {
 };
 
 const REPORT_COLORS = {
-  actual: '#4f8cc9',
-  threshold: '#b66a42',
-  model: '#5bb7c8',
-  reuse: '#d7c49a',
-  grid: '#d6dedb',
-  text: '#111827',
+  actual: '#0072ce',
+  threshold: '#ff6200',
+  model: '#00a9e0',
+  reuse: '#ffb25b',
+  grid: '#d9e2e8',
+  text: '#142033',
 };
 
 function getFilterSummary(filters) {

@@ -27,7 +27,7 @@ export default function HeroSection() {
         animate="show"
       >
         <div>
-          <motion.p variants={fadeUp} className="mb-4 font-mono text-xs uppercase tracking-widest text-cyan">
+          <motion.p variants={fadeUp} className="mb-4 font-mono text-xs uppercase tracking-widest text-gold">
             Bouygues Construction · Pilotage eau chantier
           </motion.p>
           <motion.h1 variants={fadeUp} className="font-display text-5xl font-bold leading-none text-primary md:text-6xl">
@@ -51,7 +51,7 @@ export default function HeroSection() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="eyebrow">Water Governance Index</p>
+              <p className="eyebrow">Indice maîtrise eau</p>
               <p className="mt-2 font-display text-2xl text-primary">Chantier sous contrôle</p>
             </div>
             <span className="metric-icon">

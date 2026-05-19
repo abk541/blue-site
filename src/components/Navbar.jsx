@@ -1,20 +1,22 @@
-import { BarChart3, Calculator, Droplets } from 'lucide-react';
-import bouyguesLogo from '../assets/bouygues-construction-logo-dark.svg';
+import { BarChart3, Calculator } from 'lucide-react';
+import bouyguesLogo from '../assets/bouygues-construction-logo-clean.png';
 
 export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-base bg-opacity-90 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
+    <header className="app-navbar sticky top-0 z-40 border-b border-border bg-card bg-opacity-95 backdrop-blur-xl">
+      <div className="nav-inner mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6">
         <button
-          className="flex items-center gap-3"
+          className="brand-home"
           type="button"
           onClick={() => onModeChange('calculator')}
           aria-label="Blue Site accueil"
         >
-          <span className="logo-drop">
-            <Droplets size={22} />
+          <img className="nav-logo" src={bouyguesLogo} alt="Bouygues Construction" />
+          <span className="brand-divider" aria-hidden="true" />
+          <span className="brand-copy">
+            <span className="brand-title">Blue Site</span>
+            <span className="brand-subtitle">Pilotage eau chantier</span>
           </span>
-          <span className="font-display text-xl font-bold text-blue">Blue Site</span>
         </button>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -35,17 +37,6 @@ export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
             <BarChart3 size={15} />
             Dashboard
           </button>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <span className="brand-lockup" aria-label="Bouygues Construction">
-            <span className="brand-chip">
-              <img src={bouyguesLogo} alt="" />
-            </span>
-            <span className="hidden font-sans text-xs font-bold uppercase tracking-widest text-secondary lg:inline">
-              Bouygues Construction
-            </span>
-          </span>
         </div>
       </div>
     </header>
