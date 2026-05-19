@@ -36,6 +36,9 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          BLUE_SITE_AUTH_USER: ${{ secrets.USER }}
+          BLUE_SITE_AUTH_PASSWORD: ${{ secrets.PASSWORD }}
         run: npm run build
 
       - name: Configure Pages
