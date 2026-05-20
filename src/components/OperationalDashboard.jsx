@@ -63,6 +63,47 @@ function chartTooltip({ active, payload, label }) {
   );
 }
 
+function ZoneComparisonTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const zone = payload[0]?.payload;
+  const actual = zone?.actual ?? 0;
+  const threshold = zone?.threshold ?? 0;
+  const gap = actual - threshold;
+
+  return (
+    <div className="chart-tooltip zone-tooltip">
+      <p className="font-sans text-sm font-bold text-primary">{label ?? zone?.label}</p>
+      <div className="zone-tooltip-row">
+        <span>
+          <i style={{ background: 'var(--accent-cyan)' }} />
+          Réel IoT
+        </span>
+        <strong>{formatNumber(actual, 1)} m³</strong>
+      </div>
+      <div className="zone-tooltip-row">
+        <span>
+          <i style={{ background: 'var(--accent-sand)' }} />
+          Seuil
+        </span>
+        <strong>{formatNumber(threshold, 1)} m³</strong>
+      </div>
+      <div className="zone-tooltip-row">
+        <span>Écart</span>
+        <strong className={gap > 0 ? 'text-gold' : 'text-cyan'}>
+          {gap > 0 ? '+' : ''}
+          {formatNumber(gap, 1)} m³ · {formatNumber(zone?.variancePct ?? 0, 1)}%
+        </strong>
+      </div>
+      <p className="mt-2 font-mono text-xs text-muted">
+        Potentiel: {formatNumber(zone?.savingsPotential ?? 0, 1)} m³
+      </p>
+    </div>
+  );
+}
+
 function LiveKpi({ icon: Icon, label, value, unit, tone = 'cyan', onClick }) {
   return (
     <motion.button
@@ -280,8 +321,15 @@ function ZoneComparison({ data, onSelect }) {
             <CartesianGrid stroke="rgba(22,43,61,0.08)" horizontal={false} />
             <XAxis type="number" tick={{ fill: 'rgba(20,32,51,0.52)', fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis dataKey="label" type="category" width={130} tick={{ fill: 'rgba(20,32,51,0.62)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip content={chartTooltip} />
-            <Bar dataKey="threshold" name="Seuil" fill="rgba(246,201,111,0.36)" radius={[0, 5, 5, 0]} />
+            <Tooltip content={ZoneComparisonTooltip} cursor={{ fill: 'rgba(0,114,206,0.05)' }} />
+            <Bar
+              dataKey="threshold"
+              name="Seuil"
+              fill="rgba(255,178,91,0.58)"
+              radius={[0, 5, 5, 0]}
+              activeBar={{ fill: 'rgba(255,178,91,0.82)' }}
+              onClick={(entry) => onSelect({ type: 'zone', id: entry.id })}
+            />
             <Bar dataKey="actual" name="Réel" fill="var(--accent-cyan)" radius={[0, 5, 5, 0]} onClick={(entry) => onSelect({ type: 'zone', id: entry.id })} />
           </BarChart>
         </ResponsiveContainer>

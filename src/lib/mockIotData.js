@@ -301,6 +301,113 @@ function round(value, precision = 1) {
   return Math.round(value * factor) / factor;
 }
 
+function deterministicNoise(seed, amplitude = 0.08) {
+  const raw = Math.sin(seed * 12.9898) * 43758.5453;
+  return 1 + (raw - Math.floor(raw) - 0.5) * 2 * amplitude;
+}
+
+function campaignFactor(dayNumber, campaigns, fallback = 1) {
+  const match = campaigns.find((campaign) => dayNumber >= campaign.from && dayNumber <= campaign.to);
+  return match?.factor ?? fallback;
+}
+
+function plannedActivityFactor(zoneId, dayNumber) {
+  const pourDays = [2, 3, 8, 12, 13, 17, 23, 24, 29];
+  const cureDays = [4, 5, 9, 14, 15, 18, 25, 26, 30];
+
+  if (zoneId === 'zone-beton') {
+    if (pourDays.includes(dayNumber)) return 1.72;
+    if (cureDays.includes(dayNumber)) return 1.28;
+    return campaignFactor(dayNumber, [
+      { from: 1, to: 6, factor: 1.04 },
+      { from: 10, to: 18, factor: 1.18 },
+      { from: 22, to: 30, factor: 1.12 },
+    ], 0.62);
+  }
+
+  if (zoneId === 'zone-bases-nord') {
+    return campaignFactor(dayNumber, [
+      { from: 1, to: 7, factor: 0.9 },
+      { from: 8, to: 15, factor: 1.14 },
+      { from: 16, to: 22, factor: 1.02 },
+      { from: 23, to: 30, factor: 1.24 },
+    ], 1);
+  }
+
+  if (zoneId === 'zone-vrd') {
+    return campaignFactor(dayNumber, [
+      { from: 5, to: 9, factor: 1.58 },
+      { from: 18, to: 22, factor: 1.86 },
+      { from: 27, to: 29, factor: 1.35 },
+    ], 0.42);
+  }
+
+  if (zoneId === 'zone-lavage') {
+    if ([3, 4, 8, 13, 18, 19, 24, 28, 29].includes(dayNumber)) return 1.55;
+    return campaignFactor(dayNumber, [
+      { from: 10, to: 15, factor: 1.16 },
+      { from: 23, to: 30, factor: 1.22 },
+    ], 0.76);
+  }
+
+  if (zoneId === 'zone-tech') {
+    return campaignFactor(dayNumber, [
+      { from: 1, to: 12, factor: 0.28 },
+      { from: 13, to: 20, factor: 0.62 },
+      { from: 21, to: 24, factor: 1.85 },
+      { from: 25, to: 28, factor: 1.38 },
+      { from: 29, to: 30, factor: 0.92 },
+    ], 0.5);
+  }
+
+  if (zoneId === 'zone-facade') {
+    return campaignFactor(dayNumber, [
+      { from: 1, to: 8, factor: 0.4 },
+      { from: 9, to: 16, factor: 1.44 },
+      { from: 17, to: 23, factor: 0.72 },
+      { from: 24, to: 30, factor: 1.22 },
+    ], 0.64);
+  }
+
+  if (zoneId === 'zone-paysage') {
+    return campaignFactor(dayNumber, [
+      { from: 1, to: 6, factor: 0.55 },
+      { from: 7, to: 14, factor: 0.92 },
+      { from: 15, to: 22, factor: 1.38 },
+      { from: 23, to: 30, factor: 1.64 },
+    ], 0.9);
+  }
+
+  if (zoneId === 'zone-labo') {
+    if (pourDays.includes(dayNumber)) return 2.1;
+    if ([6, 16, 20, 27].includes(dayNumber)) return 1.35;
+    return 0.42;
+  }
+
+  return 1;
+}
+
+function fieldRealityFactor(zoneId, dayNumber, rainMm) {
+  const unplannedEvents = {
+    'zone-beton': { 11: 1.22, 21: 0.66, 28: 1.18 },
+    'zone-bases-nord': { 9: 1.24, 10: 1.18, 24: 1.28, 25: 1.2 },
+    'zone-vrd': { 6: 1.25, 19: 1.22, 20: 1.34, 26: 0.58 },
+    'zone-lavage': { 8: 1.18, 18: 1.28, 24: 1.26 },
+    'zone-tech': { 22: 1.32, 23: 1.24, 27: 0.72 },
+    'zone-facade': { 14: 1.2, 15: 1.16, 22: 0.7 },
+    'zone-paysage': { 17: 1.18, 18: 1.22, 23: 1.15 },
+    'zone-labo': { 12: 1.24, 23: 1.22 },
+  };
+  const rainImpact =
+    zoneId === 'zone-paysage'
+      ? Math.max(0.38, 1 - rainMm / 13)
+      : zoneId === 'zone-vrd'
+        ? Math.max(0.68, 1 - rainMm / 28)
+        : 1;
+
+  return (unplannedEvents[zoneId]?.[dayNumber] ?? 1) * rainImpact;
+}
+
 function buildReadings() {
   const rows = [];
 
@@ -308,33 +415,33 @@ function buildReadings() {
     const date = new Date(CURRENT_DATE);
     date.setDate(CURRENT_DATE.getDate() - index);
     const dayNumber = 30 - index;
-    const weekdayFactor = [0.86, 0.98, 1.03, 1.05, 1.02, 0.92, 0.52][date.getDay()];
-    const rainMm = Math.max(0, Math.sin(dayNumber / 2.8) * 4 + (dayNumber % 9 === 0 ? 6 : 0));
+    const weekdayFactor = [0.42, 0.96, 1.08, 1.02, 1.12, 1.0, 0.74][date.getDay()];
+    const rainMm = Math.max(
+      0,
+      Math.sin(dayNumber / 2.1) * 3.4 +
+        ([7, 8, 16, 26].includes(dayNumber) ? 8.5 : 0) +
+        ([19, 20].includes(dayNumber) ? 3.2 : 0),
+    );
 
     IOT_ZONES.forEach((zone, zoneIndex) => {
-      const commissioningBoost =
-        zone.id === 'zone-tech' && dayNumber > 21 ? 1.38 : 1;
-      const baseWave = 1 + Math.sin(dayNumber / 3 + zoneIndex * 0.7) * 0.08;
-      const pressure =
-        zone.id === 'zone-bases-nord' && [9, 10, 11, 24, 25].includes(dayNumber)
-          ? 1.16
-          : 1;
-      const dustEvent =
-        zone.id === 'zone-vrd' && [6, 7, 18, 19, 20].includes(dayNumber)
-          ? 1.22
-          : 1;
-      const lowRain =
-        zone.usage === 'paysage' ? Math.max(0.72, 1 - rainMm / 24) : 1;
-      const threshold = zone.thresholdDaily * (zone.usage === 'paysage' ? lowRain : 1);
-      const model = threshold * (0.94 + zoneIndex * 0.012);
+      const planned = plannedActivityFactor(zone.id, dayNumber);
+      const fieldReality = fieldRealityFactor(zone.id, dayNumber, rainMm);
+      const jitter = deterministicNoise(dayNumber * 31 + zoneIndex * 17, 0.14);
+      const thresholdWeather =
+        zone.usage === 'paysage'
+          ? Math.max(0.5, 1 - rainMm / 20)
+          : zone.id === 'zone-vrd'
+            ? Math.max(0.78, 1 - rainMm / 38)
+            : 1;
+      const threshold = zone.thresholdDaily * planned * thresholdWeather;
+      const model = threshold * (0.88 + zoneIndex * 0.018 + deterministicNoise(dayNumber + zoneIndex, 0.035) * 0.08);
       const actual =
         threshold *
         weekdayFactor *
-        baseWave *
-        pressure *
-        dustEvent *
-        commissioningBoost *
-        (zone.usage === 'lavage' ? 1.05 : 1);
+        fieldReality *
+        jitter *
+        (zone.usage === 'lavage' ? 1.08 : 1) *
+        (zone.id === 'zone-labo' && planned > 1.8 ? 1.18 : 1);
       const reuse = actual * (zone.reuseRate / 100);
 
       rows.push({

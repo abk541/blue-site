@@ -974,6 +974,40 @@ button:disabled {
   box-shadow: 0 16px 40px rgba(22, 43, 61, 0.14);
 }
 
+.zone-tooltip {
+  min-width: 210px;
+}
+
+.zone-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.55rem;
+  color: var(--text-secondary);
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 0.74rem;
+}
+
+.zone-tooltip-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.zone-tooltip-row i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.zone-tooltip-row strong {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
 .donut-label {
   position: absolute;
   inset: 0;
