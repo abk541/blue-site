@@ -10,6 +10,21 @@ const DECIMAL_FIELDS = new Set([
   'volume_bassin',
 ]);
 
+function clampToFieldLimits(value, field) {
+  if (value === '') {
+    return '';
+  }
+
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return value;
+  }
+
+  const min = Number.isFinite(Number(field.min)) ? Number(field.min) : 0;
+  const max = Number.isFinite(Number(field.max)) ? Number(field.max) : Infinity;
+  return Number(Math.min(max, Math.max(min, numeric)).toFixed(2));
+}
+
 export default function NumberField({
   field,
   value,
@@ -33,14 +48,15 @@ export default function NumberField({
   const handleChange = (event) => {
     const nextDraft = event.target.value;
     const parsed = parseFrenchNumber(nextDraft);
+    const limited = clampToFieldLimits(parsed, field);
 
-    setDraft(nextDraft);
-    onChange(field.name, parsed);
+    setDraft(limited !== parsed && limited !== '' ? String(limited).replace('.', ',') : nextDraft);
+    onChange(field.name, limited);
   };
 
   const handleAdjust = (delta) => {
     const current = Number(value);
-    const next = Math.max(0, (Number.isFinite(current) ? current : 0) + delta);
+    const next = clampToFieldLimits((Number.isFinite(current) ? current : 0) + delta, field);
 
     onChange(field.name, Number(next.toFixed(2)));
     setDraft(formatInputNumber(next));
@@ -60,6 +76,8 @@ export default function NumberField({
           id={fieldId}
           className={`technical-input ${hasError ? 'input-error' : ''}`}
           inputMode="decimal"
+          min={field.min ?? 0}
+          max={field.max}
           value={focused ? draft : formatInputNumber(value)}
           onChange={handleChange}
           onFocus={() => {

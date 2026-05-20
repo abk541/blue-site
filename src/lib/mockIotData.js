@@ -1,4 +1,5 @@
 export const DASHBOARD_PERIODS = [
+  { id: '1j', label: '1 jour', days: 1 },
   { id: '7j', label: '7 jours', days: 7 },
   { id: '14j', label: '14 jours', days: 14 },
   { id: '30j', label: '30 jours', days: 30 },
@@ -494,7 +495,10 @@ function percent(part, total) {
 }
 
 export function buildDashboardData(results, filters) {
-  const period = DASHBOARD_PERIODS.find((item) => item.id === filters.period) ?? DASHBOARD_PERIODS[2];
+  const period =
+    DASHBOARD_PERIODS.find((item) => item.id === filters.period) ??
+    DASHBOARD_PERIODS.find((item) => item.id === DASHBOARD_FILTER_DEFAULTS.period) ??
+    DASHBOARD_PERIODS.at(-1);
   const cutoff = new Date(CURRENT_DATE);
   cutoff.setDate(CURRENT_DATE.getDate() - period.days + 1);
   const allowedZoneIds =
@@ -645,7 +649,7 @@ export function buildDashboardData(results, filters) {
     actualTotal: round(sum(filteredRows, 'actual')),
     thresholdTotal: round(sum(filteredRows, 'threshold')),
     modelTotal: round(sum(filteredRows, 'model')),
-    optimizedTotal: round(results.totals.total_optimise_m3),
+    optimizedTotal: round(sum(filteredRows, 'optimized')),
     reuseTotal: round(sum(filteredRows, 'reuse')),
     lossTotal: round(sum(filteredRows, 'loss')),
     variancePct: round(

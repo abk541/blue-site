@@ -1,16 +1,25 @@
-import { ALL_FIELD_NAMES, STEP_FIELD_NAMES } from './config';
+import { ALL_FIELD_NAMES, PROJECT_FIELDS, STEP_FIELD_NAMES } from './config';
 
 function isProjectNameValid(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-function isNumericValid(value) {
+const FIELD_RULES = new Map(PROJECT_FIELDS.map((field) => [field.name, field]));
+
+function isNumericValid(name, value) {
   if (value === '' || value === null || value === undefined) {
     return false;
   }
 
   const numeric = Number(value);
-  return Number.isFinite(numeric) && numeric >= 0;
+  const field = FIELD_RULES.get(name);
+  const max = Number(field?.max);
+
+  return (
+    Number.isFinite(numeric) &&
+    numeric >= 0 &&
+    (!Number.isFinite(max) || numeric <= max)
+  );
 }
 
 export function validateField(name, value) {
@@ -18,7 +27,13 @@ export function validateField(name, value) {
     return isProjectNameValid(value) ? '' : 'Champ requis.';
   }
 
-  return isNumericValid(value) ? '' : 'Saisissez une valeur positive.';
+  const max = Number(FIELD_RULES.get(name)?.max);
+
+  if (Number.isFinite(max) && Number(value) > max) {
+    return `Maximum ${max}.`;
+  }
+
+  return isNumericValid(name, value) ? '' : 'Saisissez une valeur positive.';
 }
 
 export function buildErrors(form) {

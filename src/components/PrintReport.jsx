@@ -209,7 +209,7 @@ function PrintZoneBars({ zones }) {
   );
 }
 
-function PrintKpiGrid({ dashboard, results }) {
+function PrintKpiGrid({ dashboard }) {
   const kpis = [
     ['Réel IoT', `${formatNumber(dashboard.kpis.actualTotal, 0)} m³`],
     ['Seuil cumulé', `${formatNumber(dashboard.kpis.thresholdTotal, 0)} m³`],
@@ -217,8 +217,8 @@ function PrintKpiGrid({ dashboard, results }) {
     ['Jours hors seuil', `${dashboard.kpis.breachDays} j`],
     ['Capteurs actifs', `${dashboard.kpis.activeSensors}/${dashboard.kpis.sensorCount}`],
     ['Eau réutilisée', `${formatNumber(dashboard.kpis.reuseTotal, 0)} m³`],
-    ['Conso. brute modèle', `${formatNumber(results.totals.total_brut_m3, 0)} m³`],
-    ['Après optimisations', `${formatNumber(results.totals.total_optimise_m3, 0)} m³`],
+    ['Modèle filtré', `${formatNumber(dashboard.kpis.modelTotal, 0)} m³`],
+    ['Après actions terrain', `${formatNumber(dashboard.kpis.optimizedTotal, 0)} m³`],
   ];
 
   return (
@@ -266,7 +266,7 @@ export default function PrintReport({ form, results, dashboard, dashboardFilters
         </div>
       </section>
 
-      <PrintKpiGrid dashboard={dashboard} results={results} />
+      <PrintKpiGrid dashboard={dashboard} />
 
       <PrintTrendChart data={dashboard.daily} />
 
@@ -285,7 +285,7 @@ export default function PrintReport({ form, results, dashboard, dashboardFilters
               <th>Score</th>
               <th>Écart seuil</th>
               <th>Jours hors seuil</th>
-              <th>Potentiel</th>
+              <th>Économie atteignable</th>
             </tr>
           </thead>
           <tbody>

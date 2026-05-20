@@ -19,6 +19,15 @@ describe('calculation engine', () => {
     expect(result.derived.jours_ouvres_total).toBe(624);
   });
 
+  it('caps working days per week at seven', () => {
+    const result = calculateWaterConsumption(
+      { ...DEFAULT_FORM, semaines_totales: 10, jours_ouvres_semaine: 9 },
+      [],
+    );
+
+    expect(result.derived.jours_ouvres_total).toBe(70);
+  });
+
   it('applies the fixed engineering adjustment factor to baseline line items', () => {
     const result = calculateWaterConsumption(DEFAULT_FORM, []);
     const concreteMix = result.lineItems.find((item) => item.id === 'BETON_GACH');

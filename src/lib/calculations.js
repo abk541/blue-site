@@ -96,9 +96,11 @@ const numberOrZero = (value) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
 export function withDerivedProjectValues(params) {
   const semaines_totales = numberOrZero(params.semaines_totales);
-  const jours_ouvres_semaine = numberOrZero(params.jours_ouvres_semaine);
+  const jours_ouvres_semaine = clamp(numberOrZero(params.jours_ouvres_semaine), 0, 7);
 
   return {
     ...params,

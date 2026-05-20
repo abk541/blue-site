@@ -27,6 +27,7 @@ import {
   PieChart,
   PolarAngleAxis,
   PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart,
   RadialBar,
@@ -98,7 +99,7 @@ function ZoneComparisonTooltip({ active, payload, label }) {
         </strong>
       </div>
       <p className="mt-2 font-mono text-xs text-muted">
-        Potentiel: {formatNumber(zone?.savingsPotential ?? 0, 1)} m³
+        Économie atteignable: {formatNumber(zone?.savingsPotential ?? 0, 1)} m³
       </p>
     </div>
   );
@@ -314,7 +315,7 @@ function ZoneComparison({ data, onSelect }) {
   return (
     <div className="chart-panel xl:col-span-2">
       <p className="eyebrow">Zones</p>
-      <h3 className="panel-title">Réel, seuil et potentiel</h3>
+      <h3 className="panel-title">Réel IoT vs seuil opérationnel</h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 12, right: 10 }}>
@@ -333,6 +334,10 @@ function ZoneComparison({ data, onSelect }) {
             <Bar dataKey="actual" name="Réel" fill="var(--accent-cyan)" radius={[0, 5, 5, 0]} onClick={(entry) => onSelect({ type: 'zone', id: entry.id })} />
           </BarChart>
         </ResponsiveContainer>
+      </div>
+      <div className="inline-legend">
+        <span><i style={{ background: 'rgba(255,178,91,0.58)' }} />Seuil</span>
+        <span><i style={{ background: 'var(--accent-cyan)' }} />Réel IoT</span>
       </div>
     </div>
   );
@@ -372,34 +377,95 @@ function PowerRank({ zones, onSelect }) {
   );
 }
 
-function PerformanceRadar({ zones }) {
-  const maxSavingsPotential = Math.max(1, ...zones.map((zone) => zone.savingsPotential));
+function OpportunityChart({ zones, onSelect }) {
+  const data = zones.slice(0, 6);
+
+  return (
+    <div className="chart-panel xl:col-span-2">
+      <p className="eyebrow">Économies</p>
+      <h3 className="panel-title">Gisements d’économie par zone</h3>
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} layout="vertical" margin={{ left: 12, right: 10 }}>
+            <CartesianGrid stroke="rgba(22,43,61,0.08)" horizontal={false} />
+            <XAxis type="number" tick={{ fill: 'rgba(20,32,51,0.52)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis dataKey="label" type="category" width={130} tick={{ fill: 'rgba(20,32,51,0.62)', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <Tooltip content={chartTooltip} cursor={{ fill: 'rgba(255,98,0,0.05)' }} />
+            <Bar
+              dataKey="loss"
+              name="Surconsommation"
+              fill="rgba(255,98,0,0.42)"
+              radius={[0, 5, 5, 0]}
+              onClick={(entry) => onSelect({ type: 'zone', id: entry.id })}
+            />
+            <Bar
+              dataKey="savingsPotential"
+              name="Économie atteignable"
+              fill="var(--accent-cyan)"
+              radius={[0, 5, 5, 0]}
+              onClick={(entry) => onSelect({ type: 'zone', id: entry.id })}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="inline-legend">
+        <span><i style={{ background: 'rgba(255,98,0,0.42)' }} />Surconsommation</span>
+        <span><i style={{ background: 'var(--accent-cyan)' }} />Économie atteignable</span>
+      </div>
+    </div>
+  );
+}
+
+function LimitRadarTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const point = payload[0]?.payload;
+
+  return (
+    <div className="chart-tooltip">
+      <p className="font-sans text-sm font-bold text-primary">{label ?? point?.zone}</p>
+      <p className="font-mono text-xs text-cyan">
+        Réel IoT: {formatNumber(point?.actual ?? 0, 1)} m³ · {formatNumber(point?.actualRatio ?? 0, 1)}% du seuil
+      </p>
+      <p className="font-mono text-xs text-gold">
+        Seuil IoT: {formatNumber(point?.threshold ?? 0, 1)} m³ · 100%
+      </p>
+    </div>
+  );
+}
+
+function LimitRadar({ zones }) {
   const data = zones.slice(0, 6).map((zone) => ({
     zone: zone.label.split(' ')[0],
-    score: Math.max(0, 100 - Math.max(0, zone.variancePct) * 2 - zone.sensorIssues * 12),
-    reuse: zone.reuseRate,
-    savings: Math.min(
-      100,
-      (zone.savingsPotential / maxSavingsPotential) * 68 +
-        zone.breachDays * 1.15 +
-        zone.targetReduction * 0.58,
-    ),
+    thresholdIndex: 100,
+    actualIndex: zone.threshold > 0 ? (zone.actual / zone.threshold) * 100 : 0,
+    actualRatio: zone.threshold > 0 ? (zone.actual / zone.threshold) * 100 : 0,
+    actual: zone.actual,
+    threshold: zone.threshold,
   }));
+  const maxScale = Math.ceil(Math.max(130, ...data.map((item) => item.actualIndex)) / 20) * 20;
 
   return (
     <div className="chart-panel">
-      <p className="eyebrow">Performance</p>
-      <h3 className="panel-title">Radar opérationnel</h3>
+      <p className="eyebrow">Seuil IoT</p>
+      <h3 className="panel-title">Radar réel vs limite</h3>
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
             <PolarGrid stroke="rgba(22,43,61,0.1)" />
             <PolarAngleAxis dataKey="zone" tick={{ fill: 'rgba(20,32,51,0.62)', fontSize: 11 }} />
-            <Radar name="Maîtrise seuil" dataKey="score" stroke="var(--accent-cyan)" fill="var(--accent-cyan)" fillOpacity={0.22} />
-            <Radar name="Potentiel" dataKey="savings" stroke="var(--accent-gold)" fill="var(--accent-gold)" fillOpacity={0.12} />
-            <Tooltip />
+            <PolarRadiusAxis domain={[0, maxScale]} tickFormatter={(value) => `${value}%`} tick={{ fill: 'rgba(20,32,51,0.42)', fontSize: 10 }} axisLine={false} />
+            <Radar name="Seuil IoT" dataKey="thresholdIndex" stroke="var(--accent-gold)" fill="var(--accent-gold)" fillOpacity={0.1} />
+            <Radar name="Réel IoT" dataKey="actualIndex" stroke="var(--accent-cyan)" fill="var(--accent-cyan)" fillOpacity={0.24} />
+            <Tooltip content={LimitRadarTooltip} />
           </RadarChart>
         </ResponsiveContainer>
+      </div>
+      <div className="inline-legend">
+        <span><i style={{ background: 'var(--accent-gold)' }} />Seuil IoT = 100%</span>
+        <span><i style={{ background: 'var(--accent-cyan)' }} />Réel IoT</span>
       </div>
     </div>
   );
@@ -531,7 +597,7 @@ function DetailPanel({ entity, details, onClose }) {
             <span>Écart <strong>{formatNumber(details.variancePct, 1)}%</strong></span>
             <span>Jours hors seuil <strong>{details.breachDays}</strong></span>
             <span>Capteurs <strong>{details.sensorCount}</strong></span>
-            <span>Potentiel <strong>{formatNumber(details.savingsPotential, 1)} m³</strong></span>
+            <span>Économie atteignable <strong>{formatNumber(details.savingsPotential, 1)} m³</strong></span>
           </div>
         )}
       </motion.aside>
@@ -578,8 +644,9 @@ export default function OperationalDashboard({ dashboard, filters, onFilterChang
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-4">
+      <div className="grid gap-6 xl:grid-cols-6">
         <ZoneComparison data={dashboard.zones} onSelect={setSelectedEntity} />
+        <OpportunityChart zones={dashboard.powerRank} onSelect={setSelectedEntity} />
         <PowerRank zones={dashboard.powerRank} onSelect={setSelectedEntity} />
       </div>
 
@@ -587,7 +654,7 @@ export default function OperationalDashboard({ dashboard, filters, onFilterChang
         <SensorFleet sensors={dashboard.sensors} onSelect={setSelectedEntity} />
         <div className="space-y-6">
           <AlertsPanel alerts={dashboard.alerts} onSelect={setSelectedEntity} />
-          <PerformanceRadar zones={dashboard.powerRank} />
+          <LimitRadar zones={dashboard.powerRank} />
         </div>
       </div>
 

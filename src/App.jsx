@@ -9,7 +9,7 @@ import StepContainer from './components/StepContainer';
 import StepperBar from './components/StepperBar';
 import { useCalculations } from './hooks/useCalculations';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { DEFAULT_FORM } from './lib/config';
+import { DEFAULT_FORM, PROJECT_FIELDS } from './lib/config';
 import { calculateBasesVieConsumption } from './lib/calculations';
 import {
   buildErrors,
@@ -23,10 +23,38 @@ const PERSISTED_DEFAULTS = {
   form: DEFAULT_FORM,
   selectedOptimizationIds: [],
 };
+const FIELD_LIMITS = new Map(PROJECT_FIELDS.map((field) => [field.name, field]));
+
+function normalizeFieldValue(name, value) {
+  if (name === 'project_name') {
+    return value;
+  }
+
+  if (value === '' || value === null || value === undefined) {
+    return value;
+  }
+
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return value;
+  }
+
+  const field = FIELD_LIMITS.get(name);
+  const min = Number.isFinite(Number(field?.min)) ? Number(field.min) : 0;
+  const max = Number.isFinite(Number(field?.max)) ? Number(field.max) : Infinity;
+
+  return Math.min(max, Math.max(min, numeric));
+}
+
+function normalizeForm(form) {
+  return Object.fromEntries(
+    Object.entries(form).map(([name, value]) => [name, normalizeFieldValue(name, value)]),
+  );
+}
 
 function createInitialState(persisted) {
   return {
-    form: { ...DEFAULT_FORM, ...(persisted?.form ?? {}) },
+    form: normalizeForm({ ...DEFAULT_FORM, ...(persisted?.form ?? {}) }),
     selectedOptimizationIds: persisted?.selectedOptimizationIds ?? [],
     currentStep: 0,
     direction: 1,
@@ -45,7 +73,7 @@ function reducer(state, action) {
         ...state,
         form: {
           ...state.form,
-          [action.name]: action.value,
+          [action.name]: normalizeFieldValue(action.name, action.value),
         },
       };
     case 'TOUCH_FIELD':

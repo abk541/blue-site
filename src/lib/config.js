@@ -66,6 +66,8 @@ export const PROJECT_FIELDS = [
     label: 'Jours ouvrés/semaine',
     unit: 'j/sem',
     description: 'Rythme moyen d’activité',
+    min: 0,
+    max: 7,
   },
   {
     name: 'effectif',
