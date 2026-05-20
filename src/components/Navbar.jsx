@@ -8,8 +8,8 @@ export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
         <button
           className="brand-home"
           type="button"
-          onClick={() => onModeChange('calculator')}
-          aria-label="Blue Site accueil"
+          onClick={() => onModeChange('dashboard')}
+          aria-label="Blue Site dashboard"
         >
           <img className="nav-logo" src={bouyguesLogo} alt="Bouygues Construction" />
           <span className="brand-divider" aria-hidden="true" />
@@ -26,7 +26,7 @@ export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
             onClick={() => onModeChange('calculator')}
           >
             <Calculator size={15} />
-            Calculateur
+            Ouvrir le calculateur
           </button>
           <button
             type="button"
@@ -38,6 +38,15 @@ export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
             Dashboard
           </button>
         </div>
+
+        <button
+          type="button"
+          className="mobile-nav-switch md:hidden"
+          onClick={() => onModeChange(mode === 'dashboard' ? 'calculator' : 'dashboard')}
+        >
+          {mode === 'dashboard' ? <Calculator size={15} /> : <BarChart3 size={15} />}
+          {mode === 'dashboard' ? 'Calculateur' : 'Dashboard'}
+        </button>
       </div>
     </header>
   );

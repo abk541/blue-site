@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Calculator } from 'lucide-react';
 import CategoryBarChart from './CategoryBarChart';
 import ExportButton from './ExportButton';
 import KPICards from './KPICards';
@@ -10,7 +11,7 @@ import PrintReport from './PrintReport';
 import TopConsumers from './TopConsumers';
 import { buildDashboardData, DASHBOARD_FILTER_DEFAULTS } from '../lib/mockIotData';
 
-export default function ResultsPanel({ form, results }) {
+export default function ResultsPanel({ form, results, onOpenCalculator }) {
   const [dashboardFilters, setDashboardFilters] = useState(DASHBOARD_FILTER_DEFAULTS);
   const dashboard = useMemo(
     () => buildDashboardData(results, dashboardFilters),
@@ -32,8 +33,21 @@ export default function ResultsPanel({ form, results }) {
         <div>
           <p className="eyebrow">Dashboard</p>
           <h2 className="section-title">Tableau de pilotage eau chantier</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-secondary">
+            Vue de pilotage par défaut. Le calculateur complet est disponible dans un espace dédié.
+          </p>
         </div>
-        <ExportButton />
+        <div className="dashboard-header-actions">
+          <button
+            type="button"
+            className="calculator-entry-button"
+            onClick={onOpenCalculator}
+          >
+            <Calculator size={18} />
+            Ouvrir le calculateur
+          </button>
+          <ExportButton />
+        </div>
       </div>
 
       <OperationalDashboard

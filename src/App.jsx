@@ -2,7 +2,6 @@ import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RotateCcw, X } from 'lucide-react';
 import HeroSection from './components/HeroSection';
-import ModeTabs from './components/ModeTabs';
 import Navbar from './components/Navbar';
 import ResultsPanel from './components/ResultsPanel';
 import StepActions from './components/StepActions';
@@ -31,8 +30,8 @@ function createInitialState(persisted) {
     selectedOptimizationIds: persisted?.selectedOptimizationIds ?? [],
     currentStep: 0,
     direction: 1,
-    mode: 'calculator',
-    resultsVisible: false,
+    mode: 'dashboard',
+    resultsVisible: true,
     isCalculating: false,
     resetOpen: false,
     touched: {},
@@ -217,14 +216,9 @@ export default function App() {
         onModeChange={setMode}
         dashboardEnabled
       />
-      <HeroSection />
-      <ModeTabs
-        mode={state.mode}
-        onModeChange={setMode}
-        dashboardEnabled
-      />
+      {state.mode === 'calculator' ? <HeroSection /> : null}
 
-      <main className="relative mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+      <main className={`relative mx-auto max-w-7xl px-4 md:px-6 ${state.mode === 'dashboard' ? 'py-5 md:py-7' : 'py-8 md:py-12'}`}>
         {state.mode === 'calculator' ? (
           <section ref={contentRef} className="calculator-shell">
             <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -280,7 +274,11 @@ export default function App() {
           </section>
         ) : (
           <section ref={resultsRef} className="scroll-mt-24">
-            <ResultsPanel form={state.form} results={results} />
+            <ResultsPanel
+              form={state.form}
+              results={results}
+              onOpenCalculator={() => setMode('calculator')}
+            />
           </section>
         )}
       </main>
