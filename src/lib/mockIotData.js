@@ -29,7 +29,7 @@ export const IOT_ZONES = [
     manager: 'GOE',
     area: 'Lot Gros Oeuvre',
     thresholdDaily: 1420,
-    targetReduction: 14,
+    targetReduction: 26,
     reuseRate: 18,
   },
   {
@@ -39,7 +39,7 @@ export const IOT_ZONES = [
     manager: 'QHSE',
     area: 'Vie chantier',
     thresholdDaily: 2280,
-    targetReduction: 20,
+    targetReduction: 34,
     reuseRate: 4,
   },
   {
@@ -49,7 +49,7 @@ export const IOT_ZONES = [
     manager: 'VRD',
     area: 'Circulations',
     thresholdDaily: 520,
-    targetReduction: 25,
+    targetReduction: 38,
     reuseRate: 12,
   },
   {
@@ -59,7 +59,7 @@ export const IOT_ZONES = [
     manager: 'Matériel',
     area: 'Portails chantier',
     thresholdDaily: 360,
-    targetReduction: 18,
+    targetReduction: 32,
     reuseRate: 28,
   },
   {
@@ -69,7 +69,7 @@ export const IOT_ZONES = [
     manager: 'CET',
     area: 'Mises en eau',
     thresholdDaily: 340,
-    targetReduction: 10,
+    targetReduction: 28,
     reuseRate: 2,
   },
   {
@@ -79,7 +79,7 @@ export const IOT_ZONES = [
     manager: 'Façade',
     area: 'Tours et façades',
     thresholdDaily: 245,
-    targetReduction: 11,
+    targetReduction: 24,
     reuseRate: 6,
   },
   {
@@ -89,7 +89,7 @@ export const IOT_ZONES = [
     manager: 'CES',
     area: 'Espaces extérieurs',
     thresholdDaily: 760,
-    targetReduction: 24,
+    targetReduction: 36,
     reuseRate: 16,
   },
   {
@@ -99,7 +99,7 @@ export const IOT_ZONES = [
     manager: 'Qualité',
     area: 'Essais et contrôles',
     thresholdDaily: 48,
-    targetReduction: 8,
+    targetReduction: 18,
     reuseRate: 0,
   },
 ];
@@ -408,6 +408,23 @@ function fieldRealityFactor(zoneId, dayNumber, rainMm) {
   return (unplannedEvents[zoneId]?.[dayNumber] ?? 1) * rainImpact;
 }
 
+function improvementPressureFactor(zoneId, dayNumber) {
+  const pressureByZone = {
+    'zone-beton': 1.13,
+    'zone-bases-nord': 1.24,
+    'zone-vrd': 1.34,
+    'zone-lavage': 1.28,
+    'zone-tech': 1.2,
+    'zone-facade': 1.18,
+    'zone-paysage': 1.36,
+    'zone-labo': 1.14,
+  };
+  const endOfMonthRush = dayNumber >= 23 ? 1.08 : 1;
+  const coordinationDip = [7, 16, 26].includes(dayNumber) ? 0.78 : 1;
+
+  return (pressureByZone[zoneId] ?? 1) * endOfMonthRush * coordinationDip;
+}
+
 function buildReadings() {
   const rows = [];
 
@@ -439,6 +456,7 @@ function buildReadings() {
         threshold *
         weekdayFactor *
         fieldReality *
+        improvementPressureFactor(zone.id, dayNumber) *
         jitter *
         (zone.usage === 'lavage' ? 1.08 : 1) *
         (zone.id === 'zone-labo' && planned > 1.8 ? 1.18 : 1);

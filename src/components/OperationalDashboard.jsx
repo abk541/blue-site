@@ -373,11 +373,17 @@ function PowerRank({ zones, onSelect }) {
 }
 
 function PerformanceRadar({ zones }) {
+  const maxSavingsPotential = Math.max(1, ...zones.map((zone) => zone.savingsPotential));
   const data = zones.slice(0, 6).map((zone) => ({
     zone: zone.label.split(' ')[0],
     score: Math.max(0, 100 - Math.max(0, zone.variancePct) * 2 - zone.sensorIssues * 12),
     reuse: zone.reuseRate,
-    savings: Math.min(100, zone.targetReduction * 4),
+    savings: Math.min(
+      100,
+      (zone.savingsPotential / maxSavingsPotential) * 68 +
+        zone.breachDays * 1.15 +
+        zone.targetReduction * 0.58,
+    ),
   }));
 
   return (
