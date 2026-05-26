@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pbkdf2Sync, randomBytes } from 'node:crypto';
 
@@ -13,6 +13,16 @@ const password = process.env.BLUE_SITE_AUTH_PASSWORD;
 
 if (isCi && (!username || !password)) {
   throw new Error('Missing GitHub repository secrets USER and/or PASSWORD for the Blue Site login gate.');
+}
+
+// Skip regeneration if no explicit credentials provided and the file already exists.
+if (!username && !password) {
+  try {
+    await access(OUTPUT_PATH);
+    process.exit(0);
+  } catch {
+    // File doesn't exist yet — fall through to generate with defaults.
+  }
 }
 
 const credentials = {
