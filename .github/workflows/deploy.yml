@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [blue-site-v1]
   workflow_dispatch:
 
 permissions:
