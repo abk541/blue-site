@@ -29,7 +29,8 @@ import { OPTIMIZATIONS } from '../lib/calculations';
 import { formatNumber } from '../lib/formatters';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-const PLANNING_STORAGE_KEY = 'blue-site-planning-v1';
+const PLANNING_STORAGE_KEY = 'blue-site-planning-v2';
+const MOCK_PLANNING_URL = `${import.meta.env.BASE_URL}mock-planning.csv`;
 const PERIOD_OPTIONS = [
   { id: 'day', label: 'Jour', icon: Calendar },
   { id: 'week', label: 'Semaine', icon: CalendarDays },
@@ -63,7 +64,7 @@ export default function PlanningView() {
   const [stored, setStored] = useLocalStorage(PLANNING_STORAGE_KEY, {
     tasks: [],
     fileName: '',
-    selectedOptIds: [],
+    selectedOptIds: ['OPT01', 'OPT05'],
   });
   const [tasks, setTasks] = useState(stored.tasks ?? []);
   const [fileName, setFileName] = useState(stored.fileName ?? '');
@@ -73,11 +74,37 @@ export default function PlanningView() {
   const [parseErrors, setParseErrors] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [showCatalog, setShowCatalog] = useState(false);
+  const [mockDisabled, setMockDisabled] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     setStored({ tasks, fileName, selectedOptIds });
   }, [tasks, fileName, selectedOptIds, setStored]);
+
+  useEffect(() => {
+    if (tasks.length > 0 || mockDisabled) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    fetch(MOCK_PLANNING_URL)
+      .then((response) => (response.ok ? response.text() : ''))
+      .then((text) => {
+        if (cancelled || !text) return;
+        const { tasks: parsedTasks, errors } = parsePlanningCsv(text);
+        if (parsedTasks.length > 0) {
+          setTasks(parsedTasks);
+          setFileName('Prestigia Rabat - exemple');
+          setParseErrors(errors);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mockDisabled, tasks.length]);
 
   const bounds = useMemo(() => getPlanningDateBounds(tasks), [tasks]);
 
@@ -118,6 +145,7 @@ export default function PlanningView() {
       if (parsedTasks.length > 0) {
         setTasks(parsedTasks);
         setFileName(file.name);
+        setMockDisabled(true);
       }
     };
     reader.readAsText(file, 'utf-8');
@@ -127,6 +155,7 @@ export default function PlanningView() {
     setTasks([]);
     setFileName('');
     setParseErrors([]);
+    setMockDisabled(true);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -184,7 +213,7 @@ export default function PlanningView() {
             Glissez un fichier CSV ou cliquez pour parcourir
           </p>
           <p className="text-sm text-secondary">
-            Format planning chantier — colonnes : <code>phase</code>, <code>type</code>, <code>start</code>, <code>end</code>, plus les métriques utiles (<code>surface_m2</code>, <code>volume_beton_m3</code>, <code>effectif</code>, <code>vehicules_jour</code>, <code>reseau_m3</code>…). L'app déduit automatiquement les consommations d'eau correspondantes.
+            Format planning chantier — colonnes : <code>phase</code>, <code>type</code>, <code>start</code>, <code>end</code>, plus les métriques utiles (<code>surface_m2</code>, <code>volume_beton_m3</code>, <code>linear_m</code>, <code>effectif</code>, <code>reseau_m3</code>, <code>nb_essais</code>, <code>nb_unites</code>). L'app déduit automatiquement les consommations d'eau correspondantes.
           </p>
           <div className="flex flex-wrap gap-2 pt-2">
             <button

@@ -547,15 +547,57 @@ button:disabled {
   transform: translateY(-1px);
 }
 
+.field-source-green {
+  border-left: 4px solid #92d050;
+}
+
+.field-source-yellow {
+  border-left: 4px solid #fff000;
+}
+
+.field-source-orange {
+  border-left: 4px solid #ffc000;
+}
+
+.field-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
 .floating-label {
   display: block;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0;
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-secondary);
+}
+
+.field-source-badge {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 0.18rem 0.5rem;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  color: #142033;
+}
+
+.field-source-badge-green {
+  background: rgba(146, 208, 80, 0.34);
+}
+
+.field-source-badge-yellow {
+  background: rgba(255, 240, 0, 0.34);
+}
+
+.field-source-badge-orange {
+  background: rgba(255, 192, 0, 0.34);
 }
 
 .technical-input {

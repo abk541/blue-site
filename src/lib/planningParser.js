@@ -42,22 +42,10 @@ export const PHASE_TYPES = {
   terrassement: {
     label: 'Terrassement',
     requires: ['surface_m2'],
-    generate: ({ surface_m2 = 0, days = 1, vehicules_jour = 0 }) => {
+    generate: ({ surface_m2 = 0 }) => {
       const list = [];
       if (surface_m2 > 0) {
         list.push({ activity: 'COMPACTAGE', quantity: surface_m2, suffix: 'compactage' });
-        list.push({
-          activity: 'ARROS_VOIES',
-          quantity: Math.round(surface_m2 * (days / 7)),
-          suffix: 'arrosage pistes',
-        });
-      }
-      if (vehicules_jour > 0) {
-        list.push({
-          activity: 'LAVAGE_ROUES',
-          quantity: vehicules_jour * days,
-          suffix: 'lavage roues',
-        });
       }
       return list;
     },
@@ -88,6 +76,14 @@ export const PHASE_TYPES = {
         ? [{ activity: 'CAROTTAGE', quantity: nb_unites, suffix: 'carottages' }]
         : [],
   },
+  sciage: {
+    label: 'Sciage bÃ©ton',
+    requires: ['linear_m'],
+    generate: ({ linear_m = 0 }) =>
+      linear_m > 0
+        ? [{ activity: 'SCIAGE_EAU', quantity: linear_m, suffix: 'sciage' }]
+        : [],
+  },
   maconnerie: {
     label: 'Maçonnerie',
     requires: ['surface_m2'],
@@ -115,18 +111,21 @@ export const PHASE_TYPES = {
       return v > 0 ? [{ activity: 'MORTIER_GACH', quantity: v, suffix: 'mortier' }] : [];
     },
   },
+  mortier: {
+    label: 'Mortier',
+    requires: ['volume_beton_m3'],
+    generate: ({ volume_beton_m3 = 0 }) =>
+      volume_beton_m3 > 0
+        ? [{ activity: 'MORTIER_GACH', quantity: volume_beton_m3, suffix: 'mortier' }]
+        : [],
+  },
   vrd: {
     label: 'VRD & voiries',
     requires: ['surface_m2'],
-    generate: ({ surface_m2 = 0, days = 1 }) =>
+    generate: ({ surface_m2 = 0 }) =>
       surface_m2 > 0
         ? [
             { activity: 'COMPACTAGE', quantity: surface_m2, suffix: 'compactage' },
-            {
-              activity: 'ARROS_VOIES',
-              quantity: Math.round(surface_m2 * (days / 7)),
-              suffix: 'arrosage',
-            },
           ]
         : [],
   },
@@ -157,7 +156,7 @@ export const PHASE_TYPES = {
   bases_vie: {
     label: 'Bases-vie (continu)',
     requires: ['effectif'],
-    generate: ({ effectif = 0, days = 1, surface_m2 = 0, repas_jour = 0 }) => {
+    generate: ({ effectif = 0, days = 1, surface_m2 = 0 }) => {
       if (effectif <= 0) return [];
       const semaines = days / 7;
       const joursOuvres = days * (5 / 7);
@@ -168,19 +167,9 @@ export const PHASE_TYPES = {
           suffix: 'chasses',
         },
         {
-          activity: 'DOUCHE',
-          quantity: Math.round(effectif * 3 * semaines),
-          suffix: 'douches',
-        },
-        {
           activity: 'LAVABO',
           quantity: Math.round(effectif * 5 * joursOuvres),
           suffix: 'lavabos',
-        },
-        {
-          activity: 'CUISINE',
-          quantity: Math.round((repas_jour > 0 ? repas_jour : effectif) * joursOuvres),
-          suffix: 'cantine',
         },
       ];
       if (surface_m2 > 0) {
@@ -222,6 +211,14 @@ export const PHASE_TYPES = {
       });
       return list;
     },
+  },
+  lavage_bennes: {
+    label: 'Lavage de bennes',
+    requires: ['nb_unites'],
+    generate: ({ nb_unites = 0 }) =>
+      nb_unites > 0
+        ? [{ activity: 'LAVAGE_BENNES', quantity: nb_unites, suffix: 'lavage bennes' }]
+        : [],
   },
   nettoyage_engins: {
     label: 'Nettoyage engins',
@@ -683,21 +680,21 @@ export function parsePlanningCsv(text) {
 
 export function buildCsvTemplate() {
   const header =
-    'phase,type,start,end,surface_m2,volume_beton_m3,linear_m,effectif,vehicules_jour,reseau_m3,nb_essais,repas_jour';
+    'phase,type,start,end,surface_m2,volume_beton_m3,linear_m,effectif,reseau_m3,nb_essais,nb_unites';
   const sample = [
-    'Installation chantier & bases-vie,bases_vie,2026-06-01,2026-08-28,300,,,60,,,,75',
-    'Terrassement plateforme bât. A,terrassement,2026-06-01,2026-06-19,8500,,,,18,,,',
-    'Coulage radier B1,radier,2026-06-15,2026-06-26,,420,,,,,,',
-    'Voiles RDC bât. B1,voiles_poteaux,2026-06-29,2026-07-17,,310,,,,,,',
-    'Dalle haute R+1,dalle,2026-07-13,2026-07-31,,260,640,,,,,',
-    'Maçonnerie cloisons R+1,maconnerie,2026-07-20,2026-08-14,1850,,,,,,,',
-    'Chapes étage R+1,chapes,2026-08-03,2026-08-21,920,,,,,,,',
-    'VRD & voiries finales,vrd,2026-08-10,2026-08-28,3200,,,,,,,',
-    'Mise en eau plomberie B1,plomberie_mee,2026-08-17,2026-08-21,,,,,,28,,',
-    'Mise en eau CVC B1,cvc_mee,2026-08-24,2026-08-28,,,,,,42,,',
-    'Essais sprinklers parking,sprinklers_mee,2026-08-24,2026-08-28,,,,,,18,,',
-    'Essais béton laboratoire,essais_labo,2026-06-15,2026-08-21,,,,,,,140,',
-    'Aménagements paysagers,paysage,2026-08-17,2026-08-28,1200,,,,,,,',
+    'Base-vie Prestigia,bases_vie,2025-10-01,2027-10-01,803,,,188,,,',
+    'Gros oeuvre,gros_oeuvre,2025-11-01,2026-12-01,,89559,,200,,,',
+    'Mortier,mortier,2025-11-01,2026-12-01,,5099,,,,,',
+    'Chapes,chapes,2026-10-01,2027-10-01,49971,,,,,,',
+    'Enduits et humidification,maconnerie,2026-10-01,2027-10-01,127417,,,,,,',
+    'Sciage beton,sciage,2026-10-01,2027-10-01,,,32154,,,,',
+    'Carottages techniques,carottage,2026-10-01,2027-10-01,,,,,,,322',
+    'Terrassement,terrassement,2026-10-01,2026-12-01,153055,,,,,,',
+    'Mise en eau plomberie,plomberie_mee,2026-07-01,2027-07-01,,,,,10.17,,',
+    'Essais sprinklers,sprinklers_mee,2026-07-01,2027-07-01,,,,,0.64,,',
+    'Essais beton laboratoire,essais_labo,2025-11-01,2026-12-01,,,,,,1792,',
+    'Arrosage paysager,paysage,2027-06-01,2027-10-01,9472,,,,,,',
+    'Lavage de bennes,lavage_bennes,2025-11-01,2026-12-01,,,,,,,3399',
   ];
   return [header, ...sample].join('\n');
 }

@@ -82,14 +82,19 @@ export const CATEGORY_ORDER = [
   'Maçonnerie & enduits',
   'Sciage & forage',
   'Terrassement & VRD',
-  'Poussières & propreté',
   'Bases-vie',
   'Techniques',
   'Laboratoire & QA',
   'Paysage',
-  'Spéciaux',
   'Déchets & recyclage',
 ];
+
+const MODEL_ASSUMPTIONS = {
+  cureDays: 2,
+  chassesParPersonneParJour: 2,
+  lavabosParPersonneParJour: 5,
+  baseVieNettoyageParWeek: 1,
+};
 
 const numberOrZero = (value) => {
   const parsed = Number(value);
@@ -100,14 +105,15 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 export function withDerivedProjectValues(params) {
   const semaines_totales = numberOrZero(params.semaines_totales);
-  const jours_ouvres_semaine = clamp(numberOrZero(params.jours_ouvres_semaine), 0, 7);
+  const explicitWorkingDays = numberOrZero(params.jours_ouvres_total);
+  const legacyWorkingDaysPerWeek = clamp(numberOrZero(params.jours_ouvres_semaine), 0, 7);
 
   return {
     ...params,
     semaines_totales,
-    jours_ouvres_semaine,
     effectif: numberOrZero(params.effectif),
-    jours_ouvres_total: semaines_totales * jours_ouvres_semaine,
+    jours_ouvres_total:
+      explicitWorkingDays > 0 ? explicitWorkingDays : semaines_totales * legacyWorkingDaysPerWeek,
   };
 }
 
@@ -138,7 +144,7 @@ export const LINE_ITEMS = [
     label: 'Cure du béton',
     category: 'Béton & mortiers',
     ratioKey: 'BETON_CURE',
-    quantity: (params) => params.surface_beton_cure * params.jours_cure,
+    quantity: (params) => params.surface_beton_cure * MODEL_ASSUMPTIONS.cureDays,
   },
   {
     id: 'BETON_NETTOYAGE',
@@ -160,13 +166,6 @@ export const LINE_ITEMS = [
     category: 'Béton & mortiers',
     ratioKey: 'POMPE_BETON',
     quantity: (params) => params.jours_pompage,
-  },
-  {
-    id: 'CENTRALE_BETON',
-    label: 'Centrale à béton temporaire',
-    category: 'Béton & mortiers',
-    ratioKey: 'CENTRALE_BETON',
-    quantity: (params) => params.jours_centrale_beton,
   },
   {
     id: 'MACONN_ENDUIT',
@@ -204,48 +203,12 @@ export const LINE_ITEMS = [
     quantity: (params) => params.surface_compacter,
   },
   {
-    id: 'ARROS_VOIES',
-    label: 'Arrosage voies internes',
-    category: 'Terrassement & VRD',
-    ratioKey: 'ARROS_VOIES',
-    quantity: (params) => params.longueur_voies * params.jours_arrosage_voies,
-  },
-  {
-    id: 'BRUMISATION',
-    label: 'Brumisation anti-poussière',
-    category: 'Poussières & propreté',
-    ratioKey: 'BRUMISATION',
-    quantity: (params) => params.surface_brumisation * params.jours_brumisation,
-  },
-  {
-    id: 'LAVAGE_ROUES',
-    label: 'Lavage roues',
-    category: 'Poussières & propreté',
-    ratioKey: 'LAVAGE_ROUES',
-    quantity: (params) => params.nb_passages_lavage_roues,
-  },
-  {
-    id: 'NETTOYAGE_ENGINS',
-    label: 'Nettoyage engins',
-    category: 'Poussières & propreté',
-    ratioKey: 'NETTOYAGE_ENGINS',
-    quantity: (params) => params.nb_lavages_engins,
-  },
-  {
     id: 'WC_CHASSE',
     label: "Chasses d'eau",
     category: 'Bases-vie',
     ratioKey: 'WC_CHASSE',
     quantity: (params) =>
-      params.chasses_par_pers * params.effectif * params.jours_ouvres_total,
-  },
-  {
-    id: 'DOUCHE',
-    label: 'Douches',
-    category: 'Bases-vie',
-    ratioKey: 'DOUCHE',
-    quantity: (params) =>
-      params.douches_par_pers_semaine * params.effectif * params.semaines_totales,
+      MODEL_ASSUMPTIONS.chassesParPersonneParJour * params.effectif * params.jours_ouvres_total,
   },
   {
     id: 'LAVABO',
@@ -253,14 +216,7 @@ export const LINE_ITEMS = [
     category: 'Bases-vie',
     ratioKey: 'LAVABO',
     quantity: (params) =>
-      params.lavabos_par_pers * params.effectif * params.jours_ouvres_total,
-  },
-  {
-    id: 'CUISINE',
-    label: 'Repas servis',
-    category: 'Bases-vie',
-    ratioKey: 'CUISINE',
-    quantity: (params) => params.repas_par_jour * params.jours_ouvres_total,
+      MODEL_ASSUMPTIONS.lavabosParPersonneParJour * params.effectif * params.jours_ouvres_total,
   },
   {
     id: 'NETTOYAGE_BASEVIE',
@@ -268,7 +224,7 @@ export const LINE_ITEMS = [
     category: 'Bases-vie',
     ratioKey: 'NETTOYAGE_BASEVIE',
     quantity: (params) =>
-      params.surface_base_vie * (params.freq_nettoyage * params.semaines_totales),
+      params.surface_base_vie * (MODEL_ASSUMPTIONS.baseVieNettoyageParWeek * params.semaines_totales),
   },
   {
     id: 'PLOMBERIE_MEE',
@@ -292,13 +248,6 @@ export const LINE_ITEMS = [
     quantity: (params) => params.volume_reseau_sprinkler,
   },
   {
-    id: 'BASSIN',
-    label: 'Bassins et piscines',
-    category: 'Techniques',
-    ratioKey: 'BASSIN',
-    quantity: (params) => params.volume_bassin,
-  },
-  {
     id: 'ESSAIS_BETON',
     label: 'Essais béton',
     category: 'Laboratoire & QA',
@@ -319,13 +268,6 @@ export const LINE_ITEMS = [
     ratioKey: 'PAYSAGE',
     quantity: (params) =>
       params.surface_plants * params.semaines_arrosage_paysager,
-  },
-  {
-    id: 'BENTONITE',
-    label: 'Boue bentonite',
-    category: 'Spéciaux',
-    ratioKey: 'BENTONITE',
-    quantity: (params) => params.volume_bentonite,
   },
   {
     id: 'LAVAGE_BENNES',

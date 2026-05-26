@@ -32,8 +32,8 @@ export default function Step1Projet({ form, derived, errors, touched, onChange, 
             <CalendarDays size={18} />
           </span>
           <div>
-            <p className="text-xs uppercase tracking-widest text-muted">Calculé automatiquement</p>
-            <p className="font-sans text-sm text-secondary">Jours ouvrés total</p>
+            <p className="text-xs uppercase tracking-widest text-muted">Planning</p>
+            <p className="font-sans text-sm text-secondary">Jours ouvrés utilisés par le modèle</p>
           </div>
         </div>
         <AnimatedNumber

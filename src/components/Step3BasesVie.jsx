@@ -50,7 +50,7 @@ export default function Step3BasesVie({
         </div>
         <div className="mt-6 h-px bg-border" />
         <p className="mt-5 font-sans text-sm leading-6 text-secondary">
-          La prévision se recalcule instantanément avec l'effectif, la durée et les usages journaliers.
+          La prévision se recalcule avec la surface base-vie, l'effectif moyen et les jours ouvrés du planning.
         </p>
       </aside>
     </div>

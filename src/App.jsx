@@ -19,10 +19,10 @@ import {
   touchStep,
 } from './lib/validation';
 
-const STORAGE_KEY = 'blue-site-state-v1';
+const STORAGE_KEY = 'blue-site-state-v2';
 const PERSISTED_DEFAULTS = {
   form: DEFAULT_FORM,
-  selectedOptimizationIds: [],
+  selectedOptimizationIds: ['OPT01', 'OPT05'],
 };
 const FIELD_LIMITS = new Map(PROJECT_FIELDS.map((field) => [field.name, field]));
 

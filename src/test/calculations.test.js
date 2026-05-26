@@ -13,15 +13,20 @@ describe('calculation engine', () => {
     expect(coeff).toBeCloseTo(0.49, 6);
   });
 
-  it('computes derived working days from duration and working rhythm', () => {
+  it('uses explicit working days from the colored planning parameters', () => {
     const result = calculateWaterConsumption(DEFAULT_FORM, []);
 
     expect(result.derived.jours_ouvres_total).toBe(624);
   });
 
-  it('caps working days per week at seven', () => {
+  it('falls back to the legacy weekly rhythm when no explicit working-day total exists', () => {
     const result = calculateWaterConsumption(
-      { ...DEFAULT_FORM, semaines_totales: 10, jours_ouvres_semaine: 9 },
+      {
+        ...DEFAULT_FORM,
+        jours_ouvres_total: 0,
+        semaines_totales: 10,
+        jours_ouvres_semaine: 9,
+      },
       [],
     );
 
@@ -32,7 +37,7 @@ describe('calculation engine', () => {
     const result = calculateWaterConsumption(DEFAULT_FORM, []);
     const concreteMix = result.lineItems.find((item) => item.id === 'BETON_GACH');
 
-    expect(concreteMix.m3).toBe(32400);
+    expect(concreteMix.m3).toBeCloseTo((DEFAULT_FORM.volume_beton * 180 * 2) / 1000, 6);
   });
 
   it('returns optimized totals and impact metrics in MAD and kg CO2', () => {
