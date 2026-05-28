@@ -1,4 +1,3 @@
-import { createPortal } from 'react-dom';
 import { formatCurrency, formatNumber } from '../lib/formatters';
 import { DASHBOARD_PERIODS, IOT_ZONES, USAGE_TYPES } from '../lib/mockIotData';
 
@@ -238,12 +237,7 @@ export default function PrintReport({ form, results, dashboard, dashboardFilters
   const printedAt = new Date().toLocaleDateString('fr-FR');
   const filterSummary = getFilterSummary(dashboardFilters);
 
-  if (typeof document === 'undefined') {
-    return null;
-  }
-
-  return createPortal(
-    <div className="print-report-root">
+  return (
     <div className="print-report">
       <header className="print-cover">
         <p>Bouygues Construction · Blue Site</p>
@@ -360,7 +354,7 @@ export default function PrintReport({ form, results, dashboard, dashboardFilters
         </table>
       </section>
 
-      <section className="print-card">
+      <section className="print-card print-page-break">
         <h2>Bilan du modèle Blue Site</h2>
         <table>
           <tbody>
@@ -436,7 +430,5 @@ export default function PrintReport({ form, results, dashboard, dashboardFilters
         </table>
       </section>
     </div>
-    </div>,
-    document.body,
   );
 }

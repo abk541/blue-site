@@ -7,6 +7,7 @@ const DECIMAL_FIELDS = new Set([
   'volume_reseau_plomberie',
   'volume_reseau_chauffage',
   'volume_reseau_sprinkler',
+  'volume_bassin',
 ]);
 
 function clampToFieldLimits(value, field) {
@@ -63,20 +64,13 @@ export default function NumberField({
 
   return (
     <motion.div
-      className={`field-shell ${field.source ? `field-source-${field.source.tone}` : ''}`}
+      className="field-shell"
       animate={hasError ? { x: [0, -4, 4, 0] } : { x: 0 }}
       transition={{ duration: 0.22 }}
     >
-      <div className="field-title-row">
-        <label htmlFor={fieldId} className="floating-label">
-          {field.label}
-        </label>
-        {field.source ? (
-          <span className={`field-source-badge field-source-badge-${field.source.tone}`}>
-            {field.source.label}
-          </span>
-        ) : null}
-      </div>
+      <label htmlFor={fieldId} className="floating-label">
+        {field.label}
+      </label>
       <div className="relative">
         <input
           id={fieldId}

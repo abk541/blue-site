@@ -1,17 +1,7 @@
-import { BarChart3, CalendarRange, Calculator } from 'lucide-react';
+import { BarChart3, Calculator } from 'lucide-react';
 import bouyguesLogo from '../assets/bouygues-construction-logo-clean.png';
 
-const MOBILE_CYCLE = ['dashboard', 'calculator', 'planning'];
-const MOBILE_LABEL = {
-  dashboard: { label: 'Dashboard', icon: BarChart3 },
-  calculator: { label: 'Calculateur', icon: Calculator },
-  planning: { label: 'Planning', icon: CalendarRange },
-};
-
 export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
-  const nextMode = MOBILE_CYCLE[(MOBILE_CYCLE.indexOf(mode) + 1) % MOBILE_CYCLE.length] ?? 'dashboard';
-  const NextIcon = MOBILE_LABEL[nextMode].icon;
-
   return (
     <header className="app-navbar sticky top-0 z-40 border-b border-border bg-card bg-opacity-95 backdrop-blur-xl">
       <div className="nav-inner mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6">
@@ -36,7 +26,7 @@ export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
             onClick={() => onModeChange('calculator')}
           >
             <Calculator size={15} />
-            Calculateur
+            Ouvrir le calculateur
           </button>
           <button
             type="button"
@@ -47,23 +37,15 @@ export default function Navbar({ mode, onModeChange, dashboardEnabled }) {
             <BarChart3 size={15} />
             Dashboard
           </button>
-          <button
-            type="button"
-            className={`mode-pill ${mode === 'planning' ? 'mode-pill-active' : ''}`}
-            onClick={() => onModeChange('planning')}
-          >
-            <CalendarRange size={15} />
-            Planning
-          </button>
         </div>
 
         <button
           type="button"
           className="mobile-nav-switch md:hidden"
-          onClick={() => onModeChange(nextMode)}
+          onClick={() => onModeChange(mode === 'dashboard' ? 'calculator' : 'dashboard')}
         >
-          <NextIcon size={15} />
-          {MOBILE_LABEL[nextMode].label}
+          {mode === 'dashboard' ? <Calculator size={15} /> : <BarChart3 size={15} />}
+          {mode === 'dashboard' ? 'Calculateur' : 'Dashboard'}
         </button>
       </div>
     </header>

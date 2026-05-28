@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { RotateCcw, X } from 'lucide-react';
 import HeroSection from './components/HeroSection';
 import Navbar from './components/Navbar';
-import PlanningView from './components/PlanningView';
 import ResultsPanel from './components/ResultsPanel';
 import StepActions from './components/StepActions';
 import StepContainer from './components/StepContainer';
@@ -19,10 +18,10 @@ import {
   touchStep,
 } from './lib/validation';
 
-const STORAGE_KEY = 'blue-site-state-v2';
+const STORAGE_KEY = 'blue-site-state-v1';
 const PERSISTED_DEFAULTS = {
   form: DEFAULT_FORM,
-  selectedOptimizationIds: ['OPT01', 'OPT05'],
+  selectedOptimizationIds: [],
 };
 const FIELD_LIMITS = new Map(PROJECT_FIELDS.map((field) => [field.name, field]));
 
@@ -248,11 +247,7 @@ export default function App() {
       {state.mode === 'calculator' ? <HeroSection /> : null}
 
       <main className={`relative mx-auto max-w-7xl px-4 md:px-6 ${state.mode === 'dashboard' ? 'py-5 md:py-7' : 'py-8 md:py-12'}`}>
-        {state.mode === 'planning' ? (
-          <section className="scroll-mt-24">
-            <PlanningView />
-          </section>
-        ) : state.mode === 'calculator' ? (
+        {state.mode === 'calculator' ? (
           <section ref={contentRef} className="calculator-shell">
             <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
@@ -311,7 +306,6 @@ export default function App() {
               form={state.form}
               results={results}
               onOpenCalculator={() => setMode('calculator')}
-              onOpenPlanning={() => setMode('planning')}
             />
           </section>
         )}

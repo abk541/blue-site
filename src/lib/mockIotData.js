@@ -14,66 +14,54 @@ export const DASHBOARD_FILTER_DEFAULTS = {
 
 export const USAGE_TYPES = [
   { id: 'beton', label: 'Béton', color: '#0072ce' },
-  { id: 'maconnerie', label: 'Maçonnerie', color: '#ffb25b' },
-  { id: 'sciage', label: 'Sciage', color: '#64748b' },
-  { id: 'vrd', label: 'Terrassement', color: '#ff6200' },
   { id: 'bases-vie', label: 'Bases-vie', color: '#00a9e0' },
+  { id: 'vrd', label: 'VRD', color: '#ff6200' },
+  { id: 'lavage', label: 'Lavage', color: '#f59e0b' },
   { id: 'technique', label: 'Réseaux', color: '#007a63' },
-  { id: 'qa', label: 'Laboratoire', color: '#64748b' },
   { id: 'paysage', label: 'Paysage', color: '#2cb1a6' },
-  { id: 'dechets', label: 'Bennes', color: '#f59e0b' },
+  { id: 'qa', label: 'Laboratoire', color: '#64748b' },
 ];
 
 export const IOT_ZONES = [
   {
     id: 'zone-beton',
-    label: 'Béton, mortiers & cure',
+    label: 'Centrale béton & cure',
     usage: 'beton',
     manager: 'GOE',
-    area: 'Gros oeuvre',
-    thresholdDaily: 1450,
+    area: 'Lot Gros Oeuvre',
+    thresholdDaily: 1420,
     targetReduction: 26,
     reuseRate: 18,
   },
   {
-    id: 'zone-maconnerie',
-    label: 'Maçonnerie, enduits & chapes',
-    usage: 'maconnerie',
-    manager: 'GOE',
-    area: 'Second oeuvre humide',
-    thresholdDaily: 105,
-    targetReduction: 18,
-    reuseRate: 4,
-  },
-  {
-    id: 'zone-sciage',
-    label: 'Sciage & carottages',
-    usage: 'sciage',
-    manager: 'GOE',
-    area: 'Réservations techniques',
-    thresholdDaily: 34,
-    targetReduction: 12,
-    reuseRate: 0,
-  },
-  {
-    id: 'zone-vrd',
-    label: 'Terrassement compactage',
-    usage: 'vrd',
-    manager: 'VRD',
-    area: 'Terrassement',
-    thresholdDaily: 31,
-    targetReduction: 25,
-    reuseRate: 8,
-  },
-  {
     id: 'zone-bases-nord',
-    label: 'Base-vie Prestigia',
+    label: 'Bases-vie Nord',
     usage: 'bases-vie',
     manager: 'QHSE',
     area: 'Vie chantier',
-    thresholdDaily: 155,
-    targetReduction: 22,
+    thresholdDaily: 2280,
+    targetReduction: 34,
     reuseRate: 4,
+  },
+  {
+    id: 'zone-vrd',
+    label: 'VRD & voiries internes',
+    usage: 'vrd',
+    manager: 'VRD',
+    area: 'Circulations',
+    thresholdDaily: 520,
+    targetReduction: 38,
+    reuseRate: 12,
+  },
+  {
+    id: 'zone-lavage',
+    label: 'Lavage engins et roues',
+    usage: 'lavage',
+    manager: 'Matériel',
+    area: 'Portails chantier',
+    thresholdDaily: 360,
+    targetReduction: 32,
+    reuseRate: 28,
   },
   {
     id: 'zone-tech',
@@ -81,19 +69,19 @@ export const IOT_ZONES = [
     usage: 'technique',
     manager: 'CET',
     area: 'Mises en eau',
-    thresholdDaily: 2,
-    targetReduction: 18,
+    thresholdDaily: 340,
+    targetReduction: 28,
     reuseRate: 2,
   },
   {
-    id: 'zone-labo',
-    label: 'Laboratoire QA',
-    usage: 'qa',
-    manager: 'Qualité',
-    area: 'Essais et contrôles',
-    thresholdDaily: 3,
-    targetReduction: 18,
-    reuseRate: 0,
+    id: 'zone-facade',
+    label: 'Façade & finitions',
+    usage: 'beton',
+    manager: 'Façade',
+    area: 'Tours et façades',
+    thresholdDaily: 245,
+    targetReduction: 24,
+    reuseRate: 6,
   },
   {
     id: 'zone-paysage',
@@ -101,19 +89,19 @@ export const IOT_ZONES = [
     usage: 'paysage',
     manager: 'CES',
     area: 'Espaces extérieurs',
-    thresholdDaily: 130,
-    targetReduction: 24,
+    thresholdDaily: 760,
+    targetReduction: 36,
     reuseRate: 16,
   },
   {
-    id: 'zone-dechets',
-    label: 'Lavage de bennes',
-    usage: 'dechets',
-    manager: 'Matériel',
-    area: 'Déchets & recyclage',
-    thresholdDaily: 28,
-    targetReduction: 16,
-    reuseRate: 12,
+    id: 'zone-labo',
+    label: 'Laboratoire QA',
+    usage: 'qa',
+    manager: 'Qualité',
+    area: 'Essais et contrôles',
+    thresholdDaily: 48,
+    targetReduction: 18,
+    reuseRate: 0,
   },
 ];
 
@@ -121,7 +109,7 @@ export const IOT_SENSORS = [
   {
     id: 'IOT-BTN-01',
     zoneId: 'zone-beton',
-    name: 'Débitmètre béton & mortier',
+    name: 'Débitmètre gâchage béton',
     device: 'AquaNode DN80',
     status: 'online',
     battery: 92,
@@ -132,7 +120,7 @@ export const IOT_SENSORS = [
   {
     id: 'IOT-BTN-02',
     zoneId: 'zone-beton',
-    name: 'Capteur cure béton',
+    name: 'Capteur cure dalle niveau 4',
     device: 'PulseMeter C40',
     status: 'online',
     battery: 78,
@@ -141,42 +129,9 @@ export const IOT_SENSORS = [
     lastReading: '15/05/2026 14:39',
   },
   {
-    id: 'IOT-MAC-01',
-    zoneId: 'zone-maconnerie',
-    name: 'Compteur enduits et chapes',
-    device: 'AquaNode DN40',
-    status: 'online',
-    battery: 79,
-    signal: 88,
-    accuracy: 94,
-    lastReading: '15/05/2026 14:36',
-  },
-  {
-    id: 'IOT-SCI-01',
-    zoneId: 'zone-sciage',
-    name: 'Sciage et carottages',
-    device: 'PulseMeter C25',
-    status: 'online',
-    battery: 82,
-    signal: 86,
-    accuracy: 93,
-    lastReading: '15/05/2026 14:22',
-  },
-  {
-    id: 'IOT-VRD-01',
-    zoneId: 'zone-vrd',
-    name: 'Compactage terrassement',
-    device: 'AquaNode DN40',
-    status: 'warning',
-    battery: 44,
-    signal: 76,
-    accuracy: 90,
-    lastReading: '15/05/2026 14:18',
-  },
-  {
     id: 'IOT-BVN-01',
     zoneId: 'zone-bases-nord',
-    name: 'Compteur sanitaire base-vie',
+    name: 'Compteur sanitaire Nord',
     device: 'AquaNode DN50',
     status: 'online',
     battery: 88,
@@ -187,13 +142,68 @@ export const IOT_SENSORS = [
   {
     id: 'IOT-BVN-02',
     zoneId: 'zone-bases-nord',
-    name: 'Nettoyage base-vie',
-    device: 'AquaNode DN25',
+    name: 'Cuisine collective',
+    device: 'KitchenFlow K25',
     status: 'warning',
     battery: 41,
     signal: 72,
     accuracy: 89,
     lastReading: '15/05/2026 13:58',
+  },
+  {
+    id: 'IOT-BVN-03',
+    zoneId: 'zone-bases-nord',
+    name: 'Douches temporaires',
+    device: 'PulseMeter C25',
+    status: 'online',
+    battery: 83,
+    signal: 91,
+    accuracy: 95,
+    lastReading: '15/05/2026 14:47',
+  },
+  {
+    id: 'IOT-VRD-01',
+    zoneId: 'zone-vrd',
+    name: 'Arrosage voies internes',
+    device: 'DustFlow D32',
+    status: 'online',
+    battery: 69,
+    signal: 88,
+    accuracy: 93,
+    lastReading: '15/05/2026 14:18',
+  },
+  {
+    id: 'IOT-VRD-02',
+    zoneId: 'zone-vrd',
+    name: 'Compactage plateforme',
+    device: 'AquaNode DN40',
+    status: 'offline',
+    battery: 12,
+    signal: 0,
+    accuracy: 0,
+    lastReading: '15/05/2026 08:21',
+  },
+  {
+    id: 'IOT-LAV-01',
+    zoneId: 'zone-lavage',
+    name: 'Portique lave-roues Est',
+    device: 'WashLoop WL60',
+    status: 'warning',
+    battery: 55,
+    signal: 64,
+    accuracy: 90,
+    lastReading: '15/05/2026 14:05',
+  },
+  {
+    id: 'IOT-LAV-02',
+    zoneId: 'zone-lavage',
+    name: 'Station lavage bennes',
+    device: 'AquaNode DN32',
+    status: 'online',
+    battery: 81,
+    signal: 89,
+    accuracy: 94,
+    lastReading: '15/05/2026 14:33',
   },
   {
     id: 'IOT-TEC-01',
@@ -209,13 +219,35 @@ export const IOT_SENSORS = [
   {
     id: 'IOT-TEC-02',
     zoneId: 'zone-tech',
-    name: 'Réseau sprinklers',
+    name: 'Boucle CVC provisoire',
     device: 'HydroTest H80',
     status: 'online',
     battery: 74,
     signal: 83,
     accuracy: 93,
     lastReading: '15/05/2026 14:12',
+  },
+  {
+    id: 'IOT-FAC-01',
+    zoneId: 'zone-facade',
+    name: 'Façade zone A',
+    device: 'PulseMeter C25',
+    status: 'online',
+    battery: 86,
+    signal: 94,
+    accuracy: 95,
+    lastReading: '15/05/2026 14:43',
+  },
+  {
+    id: 'IOT-FAC-02',
+    zoneId: 'zone-facade',
+    name: 'Finitions humidification',
+    device: 'AquaNode DN25',
+    status: 'online',
+    battery: 77,
+    signal: 81,
+    accuracy: 92,
+    lastReading: '15/05/2026 14:20',
   },
   {
     id: 'IOT-PAY-01',
@@ -249,17 +281,6 @@ export const IOT_SENSORS = [
     signal: 92,
     accuracy: 97,
     lastReading: '15/05/2026 14:37',
-  },
-  {
-    id: 'IOT-BEN-01',
-    zoneId: 'zone-dechets',
-    name: 'Lavage de bennes',
-    device: 'WashLoop WL32',
-    status: 'online',
-    battery: 81,
-    signal: 89,
-    accuracy: 94,
-    lastReading: '15/05/2026 14:33',
   },
 ];
 
@@ -322,7 +343,7 @@ function plannedActivityFactor(zoneId, dayNumber) {
     ], 0.42);
   }
 
-  if (zoneId === 'zone-dechets') {
+  if (zoneId === 'zone-lavage') {
     if ([3, 4, 8, 13, 18, 19, 24, 28, 29].includes(dayNumber)) return 1.55;
     return campaignFactor(dayNumber, [
       { from: 10, to: 15, factor: 1.16 },
@@ -340,18 +361,13 @@ function plannedActivityFactor(zoneId, dayNumber) {
     ], 0.5);
   }
 
-  if (zoneId === 'zone-maconnerie') {
+  if (zoneId === 'zone-facade') {
     return campaignFactor(dayNumber, [
       { from: 1, to: 8, factor: 0.4 },
       { from: 9, to: 16, factor: 1.44 },
       { from: 17, to: 23, factor: 0.72 },
       { from: 24, to: 30, factor: 1.22 },
     ], 0.64);
-  }
-
-  if (zoneId === 'zone-sciage') {
-    if ([6, 12, 18, 25].includes(dayNumber)) return 1.42;
-    return 0.7;
   }
 
   if (zoneId === 'zone-paysage') {
@@ -377,10 +393,9 @@ function fieldRealityFactor(zoneId, dayNumber, rainMm) {
     'zone-beton': { 11: 1.22, 21: 0.66, 28: 1.18 },
     'zone-bases-nord': { 9: 1.24, 10: 1.18, 24: 1.28, 25: 1.2 },
     'zone-vrd': { 6: 1.25, 19: 1.22, 20: 1.34, 26: 0.58 },
-    'zone-dechets': { 8: 1.18, 18: 1.28, 24: 1.26 },
+    'zone-lavage': { 8: 1.18, 18: 1.28, 24: 1.26 },
     'zone-tech': { 22: 1.32, 23: 1.24, 27: 0.72 },
-    'zone-maconnerie': { 14: 1.2, 15: 1.16, 22: 0.7 },
-    'zone-sciage': { 12: 1.26, 25: 1.18 },
+    'zone-facade': { 14: 1.2, 15: 1.16, 22: 0.7 },
     'zone-paysage': { 17: 1.18, 18: 1.22, 23: 1.15 },
     'zone-labo': { 12: 1.24, 23: 1.22 },
   };
@@ -399,10 +414,9 @@ function improvementPressureFactor(zoneId, dayNumber) {
     'zone-beton': 1.13,
     'zone-bases-nord': 1.24,
     'zone-vrd': 1.34,
-    'zone-dechets': 1.18,
+    'zone-lavage': 1.28,
     'zone-tech': 1.2,
-    'zone-maconnerie': 1.18,
-    'zone-sciage': 1.1,
+    'zone-facade': 1.18,
     'zone-paysage': 1.36,
     'zone-labo': 1.14,
   };
@@ -445,7 +459,7 @@ function buildReadings() {
         fieldReality *
         improvementPressureFactor(zone.id, dayNumber) *
         jitter *
-        (zone.usage === 'dechets' ? 1.08 : 1) *
+        (zone.usage === 'lavage' ? 1.08 : 1) *
         (zone.id === 'zone-labo' && planned > 1.8 ? 1.18 : 1);
       const reuse = actual * (zone.reuseRate / 100);
 

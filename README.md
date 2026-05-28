@@ -1,17 +1,27 @@
 # Blue Site
 
-Blue Site is now a static GitHub Pages page.
+Blue Site is a single-page React application for estimating, monitoring, and optimizing construction-site water consumption for Bouygues Construction.
 
-The app lives in `index.html` and does not require React, Vite, npm, or GitHub Actions to deploy. It uses the Rabat mock data from the colored workbook fields and keeps only the green, yellow, and orange inputs.
+## Features
 
-## Deploy
+- Water consumption calculator with project, works, welfare, and optimization inputs.
+- Premium operational dashboard with mock IoT readings, thresholds, filters, PowerRank, alerts, and sensor details.
+- Print/PDF report generation that follows the active dashboard filters and includes dashboard charts.
+- Fully client-side calculation engine with Vitest coverage.
 
-In GitHub Pages settings, use:
+## Run Locally
 
-```text
-Source: Deploy from a branch
-Branch: blue-site-v1
-Folder: / (root)
+```bash
+npm install
+npm run dev
 ```
 
-Pushing to `blue-site-v1` is enough after that.
+Open `http://127.0.0.1:5173/`.
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm test
+```
